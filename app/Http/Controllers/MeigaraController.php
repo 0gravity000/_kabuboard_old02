@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Meigara;
 use Illuminate\Http\Request;
 
+use Goutte\Client;
+
 class MeigaraController extends Controller
 {
     /**
@@ -20,9 +22,7 @@ class MeigaraController extends Controller
 
     public function import()
     {
-        $puppeteer = new Puppeteer;
-        $browser = $puppeteer->launch();
-        $page = $browser->newPage();
+        $client = new Client();   //composer require fabpot/goutte しておくこと
         //要検討
         //245ページを1度にスクレイピングできない。30秒のタイムアウトにひっかかる
         $ulrs = array(
@@ -127,7 +127,7 @@ class MeigaraController extends Controller
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=5100&p=1', //海運業 (13)
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=5150&p=1', //空運業 (5)
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=5200&p=1', //倉庫・運輸関連業 (39)
-            'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=5200&p=2',
+            'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=5200&p=2',//30秒タイムアウトのため2回に分け取得する
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=5250&p=1', //情報・通信 (478)
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=5250&p=2',
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=5250&p=3',
@@ -151,7 +151,7 @@ class MeigaraController extends Controller
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=5250&p=21',
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=5250&p=22',
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=5250&p=23',
-            'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=5250&p=24',
+            'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=5250&p=24',  
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=6050&p=1', //卸売業 (330)
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=6050&p=2',
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=6050&p=3',
@@ -229,67 +229,66 @@ class MeigaraController extends Controller
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=9050&p=23',
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=9050&p=24',
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=9050&p=25'
-        );        
-        //var els_code, els_market, els_name, els_price;  //, jsHandle, text;
-        //var urlindex, meigaraindex;
+        );
         
         //URL分ループ
         for ($urlindex=0; $urlindex < count($ulrs); $urlindex++) { 
-            $page->goto($ulrs[$urlindex]);
+            $crawler = $client->request('GET', $ulrs[$urlindex]);
+            //$page->goto($ulrs[$urlindex]);
             //ページ中の銘柄分ループ
             //カウンタのmaxを30に十分大きい場合、エラーとならない
             //カウンタのmaxが23だと、ページの最後の銘柄を読んだときなぜかエラーになる
-            for ($meigaraindex = 2; $meigaraindex < 30; $meigaraindex++) {
+            for ($meigaraindex = 1; $meigaraindex < 30; $meigaraindex++) {
                 $els_code = "";
                 $els_market = "";
                 $els_name = "";
                 $els_price = "";
                 //コード
-                $els_code = $page->querySelectorAll("#listTable > table > tbody > tr:nth-child(" . $meigaraindex . ") > td.center.yjM > a"); 
+                //var_dump($crawler);
+                //print_r($code);
+                $code = $crawler->filter("#listTable > table.yjS > tr")->eq($meigaraindex)->each(function($node){
+                    return $node->filter('td.center.yjM > a')->text();
+                });
+                //$code = $crawler->filter("#listTable > table > tbody > tr:nth-child(" . $meigaraindex . ") > td.center.yjM > a")->text();
+                //dd($code);
+                //$els_code = $page->querySelectorAll("#listTable > table > tbody > tr:nth-child(" . $meigaraindex . ") > td.center.yjM > a"); 
                 //銘柄が存在する場合は以下の処理をする。銘柄がない場合は以下の処理は飛ばす
-                if (count($els_code) != 0) {
-                    //output(els_code);
+                if ($code != null) {
                     //市場
-                    $els_market = $page->querySelectorAll("#listTable > table > tbody > tr:nth-child(" . $meigaraindex . ") > td.center.yjSt"); 
-                    //output(els_market);
+                    $market = $crawler->filter("#listTable > table.yjS > tr")->eq($meigaraindex)->each(function($node){
+                        return $node->filter('td.center.yjSt')->text();
+                    });
+                    //dd($market);
+                    //$els_market = $page->querySelectorAll("#listTable > table > tbody > tr:nth-child(" . $meigaraindex . ") > td.center.yjSt"); 
                     //名称
-                    $els_name = $page->querySelectorAll("#listTable > table > tbody > tr:nth-child(" . $meigaraindex . ") > td:nth-child(3) > strong > a");
-                    //output(els_name);
+                    $name = $crawler->filter("#listTable > table.yjS > tr")->eq($meigaraindex)->each(function($node){
+                        return $node->filter('td:nth-child(3) > strong > a')->text();
+                    });
+                    //dd($name);
+                    //$els_name = $page->querySelectorAll("#listTable > table > tbody > tr:nth-child(" . $meigaraindex . ") > td:nth-child(3) > strong > a");
                     //取引値
                     //querySelectorAllの返り値 増減がある場合はfont要素がある
-                    $els_price = $page->querySelectorAll("#listTable > table > tbody > tr:nth-child(" . $meigaraindex . ") > td:nth-child(4) > div.price.yjM > font"); 
+                    $price = $crawler->filter("#listTable > table.yjS > tr")->eq($meigaraindex)->each(function($node){
+                        if (count($node->filter('td:nth-child(4) > div.price.yjM > font'))) {
+                            //増減がある場合はfont要素がある
+                            return $node->filter('td:nth-child(4) > div.price.yjM > font')->text();
+                        } else {
+                            //増減なしの場合font要素はない
+                            return $node->filter('td:nth-child(4) > div.price.yjM')->text();
+                        }
+                    });
+                    //dd($price);
+                    //$price = $crawler->filter("#listTable > table > tbody > tr:nth-child(" . $meigaraindex . ") > td:nth-child(4) > div.price.yjM > font")->text();
+                    //$els_price = $page->querySelectorAll("#listTable > table > tbody > tr:nth-child(" . $meigaraindex . ") > td:nth-child(4) > div.price.yjM > font"); 
                     //増減なしの場合font要素はない
-                    if (count($els_price) == 0) {
-                        //dd($els_price);
-                        $els_price = $page->querySelectorAll("#listTable > table > tbody > tr:nth-child(" . $meigaraindex . ") > td:nth-child(4) > div.price.yjM"); 
+                    if (count($price) == 0) {
+                        $price = $crawler->filter("#listTable > table.yjS > tr")->eq($meigaraindex)->each(function($node){
+                            return $node->filter('td:nth-child(4) > div.price.yjM')->text();
+                        });
+                        dd($price);
+                        //$price = $crawler->filter("#listTable > table > tbody > tr:nth-child(" . $meigaraindex . ") > td:nth-child(4) > div.price.yjM")->text();
                     }
-                    //---
-                    //コード コードが存在する場合のみここに来る
-                    //var_dump($els_code[0]);
-                    $jsHandle_code = $els_code[0]->getProperty('innerText');    //戻り地は elementHandle
-                    $code = $jsHandle_code->jsonValue();
-                    //dd($code);
-                    //市場
-                    if (count($els_market) == 0) {
-                        $market = "市場なし";
-                    } else {
-                        $jsHandle_market = $els_market[0]->getProperty('innerText');
-                        $market = $jsHandle_market->jsonValue();
-                    }
-                    //名称
-                    if (count($els_name) == 0) {
-                        $name = "名称なし";
-                    } else {
-                        $jsHandle_name = $els_name[0]->getProperty('innerText');
-                        $name = $jsHandle_name->jsonValue();
-                    }
-                    //取引値　取得しない
-                    if (count($els_price) == 0) {
-                        $price = "取引値なし";
-                    } else {
-                        $jsHandle_price = $els_price[0]->getProperty('innerText');
-                        $price = $jsHandle_price->jsonValue();
-                    }
+
                     //業種コード
                     $tmpstr = strstr($ulrs[$urlindex], 'ids=');
                     $industrycode = substr($tmpstr, 4, 4);
@@ -297,14 +296,15 @@ class MeigaraController extends Controller
                     //業種
                     //セレクタ #listTable > h1
                     //例) 業種別銘柄一覧：建設業
-                    $els_industry = $page->querySelectorAll("#listTable > h1");
-                    $jsHandle_industry = $els_industry[0]->getProperty('innerText');
-                    $tmpstr= $jsHandle_industry->jsonValue();
+                    $tmpstr = $crawler->filter("#listTable > h1")->text();
+                    //$els_industry = $page->querySelectorAll("#listTable > h1");
+                    //$jsHandle_industry = $els_industry[0]->getProperty('innerText');
+                    //$tmpstr= $jsHandle_industry->jsonValue();
                     $tmpstr = strstr($tmpstr, '：');
                     $industry = mb_substr($tmpstr, 1);
                     //dd($industry);
                     //市場コード
-                    switch ($market) {
+                    switch ($market[0]) {
                         case "東証1部":
                             $marketcode = 1;
                             break;
@@ -351,27 +351,20 @@ class MeigaraController extends Controller
                             $marketcode = 99;
                     }
 
+                    //デバッグコード
+                    //print_r($code[0] . ":" . $market[0] . ":" . $name[0] . ":" . $price[0] .":" . $marketcode .":" . $industry .":" . (int)$industrycode ."/");
                     //DBに登録処理 Eloquentモデル
-                    $meigara = Meigara::updateOrCreate(
-                        ['code' => $code],
-                        ['name' => $name, 'market' => $market, 'marketcode' => $marketcode,
+                    $meigara_buf = Meigara::updateOrCreate(
+                        ['code' => $code[0]],
+                        ['name' => $name[0], 'market' => $market[0], 'marketcode' => $marketcode,
                          'industry' => $industry, 'industrycode' => $industrycode]
                     ); 
-                    //デバッグコード
-                    //print_r($code . ":" . $market . ":" . $name . ":" . $price ."/");
-
-                    //CSV出力
-                    //Give up：csv-writerが使えない。
-                    //npm run devで以下のエラー
-                    //ERROR in ./node_modules/csv-writer/dist/lib/file-writer.js
-                    //Module not found: Error: Can't resolve 'fs' in '/Users/0gravity/0g/021_laravel_srv/kabuboard/node_modules/csv-writer/dist/lib'
-                    //output_csv(els_code, els_market, els_name, els_price);
 
                 } //銘柄かある場合は以下の処理をする。銘柄がない場合は以下の処理は飛ばす END
             }   //ページ中の銘柄分ループ END
         }   //URL分ループ END
 
-        $browser->close();        
+        $meigaras = Meigara::all();
 
         return view('meigara', compact('meigaras'));
     }

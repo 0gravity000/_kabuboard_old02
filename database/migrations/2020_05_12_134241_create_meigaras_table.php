@@ -20,7 +20,7 @@ class CreateMeigarasTable extends Migration
             $table->string('market');
             $table->integer('marketcode');
             $table->string('industry');
-            $table->integer('industrycode');
+            $table->string('industrycode');
             $table->timestamps();
         });
     }
