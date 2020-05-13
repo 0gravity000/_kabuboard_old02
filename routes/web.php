@@ -23,3 +23,4 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/meigara', 'MeigaraController@index');
 Route::get('/meigara/import', 'MeigaraController@import');
+Route::get('/realtime', 'RealtimeController@index');

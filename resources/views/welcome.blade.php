@@ -85,8 +85,7 @@
                 </div>
 
                 <div class="links">
-                    <a href="/meigara">銘柄一覧(業種別)</a>
-                    <a href="/meigara/import">銘柄一覧インポート</a>
+                    <a href="/meigara">Get Start</a>
                 </div>
             </div>
         </div>

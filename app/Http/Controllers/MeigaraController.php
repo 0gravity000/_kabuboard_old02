@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Code;
+use App\Market;
+use App\Industry;
 use App\Meigara;
 use Illuminate\Http\Request;
 
@@ -16,8 +19,13 @@ class MeigaraController extends Controller
      */
     public function index()
     {
-        $meigaras = Meigara::all();
-        return view('meigara', compact('meigaras'));
+        $codes = Code::all();
+        /*
+        foreach ($codes as $code) {
+            dd($code);
+        }
+        */
+        return view('meigara', compact('codes'));
     }
 
     public function import()
@@ -151,7 +159,7 @@ class MeigaraController extends Controller
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=5250&p=21',
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=5250&p=22',
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=5250&p=23',
-            'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=5250&p=24',  
+            'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=5250&p=24', 
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=6050&p=1', //卸売業 (330)
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=6050&p=2',
             'https://stocks.finance.yahoo.co.jp/stocks/qi/?ids=6050&p=3',
@@ -353,20 +361,39 @@ class MeigaraController extends Controller
 
                     //デバッグコード
                     //print_r($code[0] . ":" . $market[0] . ":" . $name[0] . ":" . $price[0] .":" . $marketcode .":" . $industry .":" . (int)$industrycode ."/");
+
+                    //DBに登録処理 Eloquentモデル
+                    $market_buf = Market::updateOrCreate(
+                        ['code' => $marketcode],
+                        ['name' => $market[0]]
+                    ); 
+                    $industry_buf = Industry::updateOrCreate(
+                        ['code' => $industrycode],
+                        ['name' => $industry]
+                    );
+
+                    $meigara_buf = Code::updateOrCreate(
+                        ['code' => $code[0]],
+                        ['name' => $name[0],
+                         'market_id' => Market::where('name', $market[0])->first()->id,
+                         'industry_id' => Industry::where('name', $industry)->first()->id]
+                    ); 
+
+                    /*
                     //DBに登録処理 Eloquentモデル
                     $meigara_buf = Meigara::updateOrCreate(
                         ['code' => $code[0]],
                         ['name' => $name[0], 'market' => $market[0], 'marketcode' => $marketcode,
                          'industry' => $industry, 'industrycode' => $industrycode]
                     ); 
+                    */
 
                 } //銘柄かある場合は以下の処理をする。銘柄がない場合は以下の処理は飛ばす END
             }   //ページ中の銘柄分ループ END
         }   //URL分ループ END
 
-        $meigaras = Meigara::all();
-
-        return view('meigara', compact('meigaras'));
+        $codes = Code::all();
+        return view('meigara', compact('codes'));
     }
 
     /**

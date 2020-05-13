@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMeigarasTable extends Migration
+class CreateRealtimeCheckingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CreateMeigarasTable extends Migration
      */
     public function up()
     {
-        Schema::create('meigaras', function (Blueprint $table) {
+        Schema::create('realtime_checkings', function (Blueprint $table) {
             $table->id();
-            $table->integer('code')->unique();
-            $table->string('name');
-            $table->string('market');
-            $table->integer('marketcode');
-            $table->string('industry');
-            $table->string('industrycode');
+            $table->integer('user_id');
+            $table->integer('code');
+            $table->integer('price')->nullable();   //現在値
+            $table->integer('pre_price')->nullable();   //前回(1分前)現在値
             $table->timestamps();
         });
     }
@@ -32,6 +30,6 @@ class CreateMeigarasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('meigaras');
+        Schema::dropIfExists('realtime_checkings');
     }
 }
