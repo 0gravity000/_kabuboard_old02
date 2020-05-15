@@ -8,8 +8,8 @@ class Market extends Model
 {
     protected $guarded = [];
 
-    public function codes()
+    public function stocks()
     {
-        return $this->hasMany('App\Code');
+        return $this->hasMany('App\Stock');
     }    
 }

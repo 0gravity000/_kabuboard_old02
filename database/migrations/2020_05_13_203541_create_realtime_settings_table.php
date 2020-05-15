@@ -16,7 +16,7 @@ class CreateRealtimeSettingsTable extends Migration
         Schema::create('realtime_settings', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->integer('code_id');
+            $table->integer('stock_id');
             $table->integer('upperlimit')->nullable();  //上限値
             $table->dateTime('upperlimit_settingat')->nullable();
             $table->integer('lowerlimit')->nullable();  //下限値

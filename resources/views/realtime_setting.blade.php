@@ -139,12 +139,12 @@
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">
+              <a href="/realtime_checking">監視画面へ</a>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">
               <a href="/realtime/create">銘柄追加</a>
             </button>
           </div>
-            <button type="button" class="btn btn-sm btn-outline-secondary">
-              <a href="/realtime_checking">監視</a>
-            </button>
         </div>
       </div>
 	  <!--
@@ -167,8 +167,8 @@
         <tbody>
             @foreach($realtime_settings as $realtime_setting)
             <tr>
-            <td>{{ $realtime_setting->code->code }}</td>
-            <td>{{ $realtime_setting->code->name }}</td>
+            <td>{{ $realtime_setting->stock->code }}</td>
+            <td>{{ $realtime_setting->stock->name }}</td>
             <td>{{ $realtime_setting->upperlimit }}</td>
             <td>{{ $realtime_setting->lowerlimit }}</td>
             <td>{{ $realtime_setting->changerate }}</td>

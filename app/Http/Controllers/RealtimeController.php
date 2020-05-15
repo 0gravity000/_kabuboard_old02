@@ -48,15 +48,15 @@ class RealtimeController extends Controller
     public function store(Request $request)
     {
         //dd(request()->code);
-        $codes = Stock::where('code', request()->code);
+        $stocks = Stock::where('code', request()->code);
         //dd($codes->first());
         //codesテーブルにないコードの場合
-        if($codes->first() == null) {
+        if($stocks->first() == null) {
             return redirect('/realtime/create');
             //dd('$codes->first() == null');
         } 
 
-        $realtime_settings = RealtimeSetting::where('code_id', $codes->first()->id);
+        $realtime_settings = RealtimeSetting::where('stock_id', $stocks->first()->id);
         //dd($realtimeSettings);
         //realtime_ettingsテーブルにすでに登録がある場合
         if($realtime_settings->first() != null) {
@@ -68,9 +68,13 @@ class RealtimeController extends Controller
         //$code = new Code;
         //dd($code);
         $realtime_setting->user_id = 1;
-        $realtime_setting->code_id = $codes->first()->id;
+        $realtime_setting->stock_id = $stocks->first()->id;
         //dd($realtime_setting);
         $realtime_setting->save();
+
+        $realtime_checking = new RealtimeChecking;
+        $realtime_checking->realtime_setting_id = $realtime_setting->id;
+        $realtime_checking->save();
 
         $realtime_settings = RealtimeSetting::all();
         return redirect('/realtime_checking');

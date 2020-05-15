@@ -8,9 +8,9 @@ class RealtimeSetting extends Model
 {
     protected $guarded = [];
 
-    public function code()
+    public function stock()
     {
-        return $this->belongsTo('App\Code');
+        return $this->belongsTo('App\Stock');
     }
 
     public function users()
@@ -20,7 +20,7 @@ class RealtimeSetting extends Model
 
     public function realtime_checking()
     {
-        return $this->belongsTo('App\RealtimeChecking');
+        return $this->hasOne('App\RealtimeChecking');
     }    
    
 }

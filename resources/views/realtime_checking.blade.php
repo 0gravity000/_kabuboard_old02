@@ -139,7 +139,7 @@
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">
-              <a href="/realtime_setting">監視設定</a>
+              <a href="/realtime_setting">設定画面へ</a>
             </button>
           </div>
           <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
@@ -168,11 +168,12 @@
         <tbody>
             @foreach($realtime_checkings as $realtime_checking)
             <tr>
-            <td>{{ $realtime_checking->realtime_setting->code->code }}</td>
+            <td>{{ $realtime_checking->realtime_setting->stock->code }}</td>
+            <td>{{ $realtime_checking->realtime_setting->stock->name }}</td>
             <td>{{ $realtime_checking->price }}</td>
-            <td>{{ $realtime_checking->realtime_setting->code->name }}</td>
             <td>{{ $realtime_checking->realtime_setting->upperlimit }}</td>
-            <td>{{ $realtime_checking->price }}</td>
+            <td>{{ $realtime_checking->realtime_setting->lowerlimit }}</td>
+            <td>{{ $realtime_checking->changerate }}</td>
             <td>{{ $realtime_checking->realtime_setting->changerate }}</td>
             </tr>
             @endforeach
@@ -186,5 +187,11 @@
       <script>window.jQuery || document.write('<script src="/docs/4.4/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
-        <script src="/js/dashboard.js"></script></body>
+        <script src="/js/dashboard.js"></script>
+        <script>  //x秒ごとにリロード 値更新のため0
+          setTimeout(function () {
+              location.reload();
+          }, 10000);
+        </script>
+  </body>
 </html>

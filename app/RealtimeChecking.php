@@ -10,6 +10,6 @@ class RealtimeChecking extends Model
 
     public function realtime_setting()
     {
-        return $this->hasOne('App\RealtimeSetting');
+        return $this->belongsTo('App\RealtimeSetting');
     }    
 }
