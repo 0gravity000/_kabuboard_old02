@@ -164,12 +164,12 @@
         </tr>
         </thead>
         <tbody>
-            @foreach($codes as $code)
+            @foreach($stocks as $stock)
             <tr>
-            <td>{{ $code->code }}</td>
-            <td>{{ $code->market->name }}</td>
-            <td>{{ $code->name }}</td>
-            <td>{{ $code->industry->name }}</td>
+            <td>{{ $stock->code }}</td>
+            <td>{{ $stock->market->name }}</td>
+            <td>{{ $stock->name }}</td>
+            <td>{{ $stock->industry->name }}</td>
             <td>#</td>
             </tr>
             @endforeach

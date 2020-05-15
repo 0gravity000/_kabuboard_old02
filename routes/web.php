@@ -28,3 +28,4 @@ Route::get('/realtime_setting', 'RealtimeController@index_setting');
 Route::get('/realtime/create', 'RealtimeController@create');
 Route::post('/realtime/store', 'RealtimeController@store');
 Route::get('/realtime/destroy/{user_id}/{code_id}', 'RealtimeController@destroy');
+Route::get('/realtime/edit', 'RealtimeController@edit');

@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\RealtimeSetting;
 use Illuminate\Http\Request;
 
-use App\Code;
+use App\Stock;
+//use App\Code;
 use App\RealtimeChecking;
 
 class RealtimeController extends Controller
@@ -47,7 +48,7 @@ class RealtimeController extends Controller
     public function store(Request $request)
     {
         //dd(request()->code);
-        $codes = Code::where('code', request()->code);
+        $codes = Stock::where('code', request()->code);
         //dd($codes->first());
         //codesテーブルにないコードの場合
         if($codes->first() == null) {
@@ -94,7 +95,7 @@ class RealtimeController extends Controller
      */
     public function edit(RealtimeSetting $realtimeSetting)
     {
-        //
+        return redirect('/realtime_setting');
     }
 
     /**

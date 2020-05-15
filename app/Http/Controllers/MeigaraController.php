@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Code;
+use App\Stock;
+//use App\Code;
 use App\Market;
 use App\Industry;
 use App\Meigara;
@@ -19,13 +20,13 @@ class MeigaraController extends Controller
      */
     public function index()
     {
-        $codes = Code::all();
+        $stocks = Stock::all();
         /*
         foreach ($codes as $code) {
             dd($code);
         }
         */
-        return view('meigara', compact('codes'));
+        return view('meigara', compact('stocks'));
     }
 
     public function import()
@@ -372,7 +373,7 @@ class MeigaraController extends Controller
                         ['name' => $industry]
                     );
 
-                    $meigara_buf = Code::updateOrCreate(
+                    $meigara_buf = Stock::updateOrCreate(
                         ['code' => $code[0]],
                         ['name' => $name[0],
                          'market_id' => Market::where('name', $market[0])->first()->id,
@@ -392,8 +393,7 @@ class MeigaraController extends Controller
             }   //ページ中の銘柄分ループ END
         }   //URL分ループ END
 
-        $codes = Code::all();
-        return view('meigara', compact('codes'));
+        return redirect('/meigara');
     }
 
     /**
