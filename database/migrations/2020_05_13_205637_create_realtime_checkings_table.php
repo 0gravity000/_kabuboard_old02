@@ -15,10 +15,15 @@ class CreateRealtimeCheckingsTable extends Migration
     {
         Schema::create('realtime_checkings', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
-            $table->integer('code');
+            $table->integer('realtime_setting_id');
             $table->integer('price')->nullable();   //現在値
+            $table->dateTime('price_checkingat')->nullable();   //現在値
             $table->integer('pre_price')->nullable();   //前回(1分前)現在値
+            $table->dateTime('pre_price_checkingat')->nullable();   //前回(1分前)現在値
+            $table->float('rate')->nullable();   //前回(1分前)現在値
+            $table->dateTime('rate_checkingat')->nullable();   //前回(1分前)現在値
+            $table->float('pre_rate')->nullable();   //前回(1分前)現在値
+            $table->dateTime('pre_rate_checkingat')->nullable();   //前回(1分前)現在値
             $table->timestamps();
         });
     }

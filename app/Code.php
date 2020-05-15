@@ -17,4 +17,10 @@ class Code extends Model
     {
         return $this->belongsTo('App\Industry');
     }    
+
+    public function realtime_settings()
+    {
+        return $this->hasMany('App\RealtimeSettings');
+    }    
+
 }

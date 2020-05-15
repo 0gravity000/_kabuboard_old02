@@ -57,125 +57,35 @@
 
 <div class="container-fluid">
   <div class="row">
-    <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-      <div class="sidebar-sticky">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link" href="/">
-              <span data-feather="home"></span>
-              TOP
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/meigara">
-              <span data-feather="file"></span>
-              銘柄一覧
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/realtime">
-              <span data-feather="shopping-cart"></span>
-              リアルタイム銘柄監視
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="users"></span>
-              Customers
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="bar-chart-2"></span>
-              Reports
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="layers"></span>
-              Integrations
-            </a>
-          </li>
-        </ul>
-
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-          <span>シグナル（日足）</span>
-          <a class="d-flex align-items-center text-muted" href="#" aria-label="Add a new report">
-            <span data-feather="plus-circle"></span>
-          </a>
-        </h6>
-        <ul class="nav flex-column mb-2">
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              赤三兵
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              黒三兵
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              出来高急増
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Year-end sale
-            </a>
-          </li>
-        </ul>
-      </div>
-    </nav>
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">銘柄一覧</h1>
+        <h1 class="h2">リアルタイム銘柄監視</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">
-              <a href="/meigara/import">銘柄一覧インポート</a>
+              <a href="/realtime">戻る</a>
             </button>
           </div>
-          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-            <span data-feather="calendar"></span>
-            This week
-          </button>
         </div>
       </div>
 	  <!--
       <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 	  -->
-      <h2>Section title</h2>
-      <div class="table-responsive">
-        <table class="table table-striped table-sm">
-        <thead>
-        <tr>
-            <th>コード</th>
-            <th>市場</th>
-            <th>銘柄名</th>
-            <th>業種</th>
-            <th>#</th>
-        </tr>
-        </thead>
-        <tbody>
-            @foreach($codes as $code)
-            <tr>
-            <td>{{ $code->code }}</td>
-            <td>{{ $code->market->name }}</td>
-            <td>{{ $code->name }}</td>
-            <td>{{ $code->industry->name }}</td>
-            <td>#</td>
-            </tr>
-            @endforeach
-        </tbody>
-        </table>
-      </div>
+      <h2>銘柄追加</h2>
+      <form method="POST" action="/realtime/store">
+        {{ csrf_field() }}   
+        <div class="form-group">
+          <label for="code">コード</label>
+          <input type="code" class="form-control" name="code">
+          <small class="form-text text-muted">4桁のコードを入力してください。例)1301 （株）極洋</small>
+        </div>
+        <div class="form-group">
+          <label for="name">銘柄名</label>
+          <input class="form-control" id="disabledInput" type="text" placeholder="Disabled input here..." disabled>
+        </div>
+        <button type="submit" class="btn btn-primary">登録</button>
+      </form>
     </main>
   </div>
 </div>
