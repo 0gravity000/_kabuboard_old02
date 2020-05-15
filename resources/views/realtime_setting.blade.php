@@ -73,7 +73,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/realtime">
+            <a class="nav-link" href="/realtime_checking">
               <span data-feather="shopping-cart"></span>
               リアルタイム銘柄監視
             </a>
@@ -142,16 +142,15 @@
               <a href="/realtime/create">銘柄追加</a>
             </button>
           </div>
-          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-            <span data-feather="calendar"></span>
-            This week
-          </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">
+              <a href="/realtime_checking">監視</a>
+            </button>
         </div>
       </div>
 	  <!--
       <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 	  -->
-      <h2>Section title</h2>
+      <h2>監視設定</h2>
       <div class="table-responsive">
         <table class="table table-striped table-sm">
         <thead>

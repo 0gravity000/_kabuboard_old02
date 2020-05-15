@@ -23,7 +23,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/meigara', 'MeigaraController@index');
 Route::get('/meigara/import', 'MeigaraController@import');
-Route::get('/realtime', 'RealtimeController@index');
+Route::get('/realtime_checking', 'RealtimeController@index_checking');
+Route::get('/realtime_setting', 'RealtimeController@index_setting');
 Route::get('/realtime/create', 'RealtimeController@create');
 Route::post('/realtime/store', 'RealtimeController@store');
 Route::get('/realtime/destroy/{user_id}/{code_id}', 'RealtimeController@destroy');

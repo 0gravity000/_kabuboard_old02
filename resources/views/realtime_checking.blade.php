@@ -135,11 +135,11 @@
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">銘柄一覧</h1>
+        <h1 class="h2">リアルタイム銘柄監視</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">
-              <a href="/meigara/import">銘柄一覧インポート</a>
+              <a href="/realtime_setting">監視設定</a>
             </button>
           </div>
           <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
@@ -151,26 +151,29 @@
 	  <!--
       <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 	  -->
-      <h2>Section title</h2>
+      <h2>リアルタイム監視</h2>
       <div class="table-responsive">
         <table class="table table-striped table-sm">
         <thead>
         <tr>
             <th>コード</th>
-            <th>市場</th>
             <th>銘柄名</th>
-            <th>業種</th>
-            <th>#</th>
+            <th>現在値</th>
+            <th>上限値（円）</th>
+            <th>下限値（円）</th>
+            <th>変化率</th>
+            <th>変化率（％）</th>
         </tr>
         </thead>
         <tbody>
-            @foreach($codes as $code)
+            @foreach($realtime_checkings as $realtime_checking)
             <tr>
-            <td>{{ $code->code }}</td>
-            <td>{{ $code->market->name }}</td>
-            <td>{{ $code->name }}</td>
-            <td>{{ $code->industry->name }}</td>
-            <td>#</td>
+            <td>{{ $realtime_checking->realtime_setting->code->code }}</td>
+            <td>{{ $realtime_checking->price }}</td>
+            <td>{{ $realtime_checking->realtime_setting->code->name }}</td>
+            <td>{{ $realtime_checking->realtime_setting->upperlimit }}</td>
+            <td>{{ $realtime_checking->price }}</td>
+            <td>{{ $realtime_checking->realtime_setting->changerate }}</td>
             </tr>
             @endforeach
         </tbody>

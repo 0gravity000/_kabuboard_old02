@@ -6,18 +6,25 @@ use App\RealtimeSetting;
 use Illuminate\Http\Request;
 
 use App\Code;
+use App\RealtimeChecking;
 
 class RealtimeController extends Controller
 {
+
+    public function index_checking()
+    {
+        $realtime_checkings = RealtimeChecking::all();
+        return view('realtime_checking', compact('realtime_checkings'));
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index_setting()
     {
         $realtime_settings = RealtimeSetting::all();
-        return view('realtime', compact('realtime_settings'));
+        return view('realtime_setting', compact('realtime_settings'));
     }
 
     /**
@@ -65,7 +72,7 @@ class RealtimeController extends Controller
         $realtime_setting->save();
 
         $realtime_settings = RealtimeSetting::all();
-        return redirect('/realtime');
+        return redirect('/realtime_checking');
     }
 
     /**
@@ -115,7 +122,7 @@ class RealtimeController extends Controller
                                 ->first();
         //dd($realtime_setting);
         $realtime_setting->delete();
-        return redirect('/realtime');
+        return redirect('/realtime_setting');
 
         //$realtime_settings = RealtimeSetting::all();
         //return view('realtime', compact('realtime_settings'));
