@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Stock;
 use App\RealtimeChecking;
 use App\Events\MinitlyStocksCheck;
+use DateTime;
 
 class RealtimeController extends Controller
 {
@@ -36,7 +37,7 @@ class RealtimeController extends Controller
     public function create()
     {
         $realtime_settings = RealtimeSetting::all();
-        return view('realtime_edit', compact('realtime_settings'));
+        return view('realtime_add', compact('realtime_settings'));
     }
 
     /**
@@ -74,6 +75,8 @@ class RealtimeController extends Controller
 
         $realtime_checking = new RealtimeChecking;
         $realtime_checking->realtime_setting_id = $realtime_setting->id;
+        $realtime_checking->price_match_flag = false;
+        $realtime_checking->rate_match_flag = false;
         $realtime_checking->save();
 
         //$realtime_settings = RealtimeSetting::all();
@@ -97,9 +100,13 @@ class RealtimeController extends Controller
      * @param  \App\RealtimeSetting  $realtimeSetting
      * @return \Illuminate\Http\Response
      */
-    public function edit(RealtimeSetting $realtimeSetting)
+    public function edit($user_id, $stock_id)
     {
-        return redirect('/realtime_setting');
+        $realtime_setting = RealtimeSetting::where('user_id', $user_id)
+                                ->where('stock_id', $stock_id)
+                                ->first();
+
+        return view('realtime_edit', compact('realtime_setting'));
     }
 
     /**
@@ -109,11 +116,31 @@ class RealtimeController extends Controller
      * @param  \App\RealtimeSetting  $realtimeSetting
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, RealtimeSetting $realtimeSetting)
+    public function update_checking(Request $request, RealtimeSetting $realtimeSetting)
     {
         event(new MinitlyStocksCheck());
 
         return redirect('/realtime_checking');
+    }
+
+    public function update_setting()
+    {
+        //dd(request());
+        $realtime_setting = RealtimeSetting::where('id', request()->id)->first();
+
+        $realtime_setting->upperlimit = request()->upperlimit;
+        $now = new DateTime();
+        $realtime_setting->upperlimit_settingat = $now->format('Y-m-d H:i:s');
+        $realtime_setting->lowerlimit = request()->lowerlimit;
+        $now = new DateTime();
+        $realtime_setting->lowerlimit_settingat = $now->format('Y-m-d H:i:s');
+        $realtime_setting->changerate = request()->changerate;
+        $now = new DateTime();
+        $realtime_setting->changerate_changerate = $now->format('Y-m-d H:i:s');
+        $realtime_setting->save();
+        //dd($realtime_setting);
+
+        return redirect('/realtime_setting');
     }
 
     /**
@@ -122,10 +149,10 @@ class RealtimeController extends Controller
      * @param  \App\RealtimeSetting  $realtimeSetting
      * @return \Illuminate\Http\Response
      */
-    public function destroy($user_id, $code_id)
+    public function destroy($user_id, $stock_id)
     {
         $realtime_setting = RealtimeSetting::where('user_id', $user_id)
-                                ->where('code_id', $code_id)
+                                ->where('stock_id', $stock_id)
                                 ->first();
         //dd($realtime_setting);
         $realtime_setting->delete();

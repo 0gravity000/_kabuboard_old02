@@ -72,37 +72,18 @@
 	  <!--
       <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 	  -->
-      <h2>監視条件設定</h2>
-      <form method="POST" action="/realtime/update_setting">
-        {{ csrf_field() }}
+      <h2>銘柄追加</h2>
+      <form method="POST" action="/realtime/store">
+        {{ csrf_field() }}   
         <div class="form-group">
           <label for="code">コード</label>
-          <input class="form-control" name="code" id="disabledInput" type="text" placeholder={{ $realtime_setting->stock->code }} disabled>
+          <input type="code" class="form-control" name="code">
+          <small class="form-text text-muted">4桁のコードを入力してください。例)1301 （株）極洋</small>
         </div>
         <div class="form-group">
           <label for="name">銘柄名</label>
-          <input class="form-control" name="name" id="disabledInput" type="text" placeholder={{ $realtime_setting->stock->name }} disabled>
+          <input class="form-control" id="disabledInput" type="text" placeholder="Disabled input here..." disabled>
         </div>
-        <div class="form-group">
-          <label for="price">現在値</label>
-          <input class="form-control" name="price" id="disabledInput" type="text" placeholder={{ $realtime_setting->stock->price }} disabled>
-        </div>
-        <div class="form-group">
-          <label for="upperlimit">上限値</label>
-          <input type="text" class="form-control" name="upperlimit">
-          <small class="form-text text-muted">上限値（円）を設定してください</small>
-        </div>
-        <div class="form-group">
-          <label for="lowerlimit">下限値</label>
-          <input type="text" class="form-control" name="lowerlimit">
-          <small class="form-text text-muted">下限値（円）を設定してください</small>
-        </div>
-        <div class="form-group">
-          <label for="changerate">変化率</label>
-          <input type="text" class="form-control" name="changerate">
-          <small class="form-text text-muted">変化率（％）を設定してください</small>
-        </div>
-        <input type="hidden" name="id" value="{{ $realtime_setting->id }}">
         <button type="submit" class="btn btn-primary">登録</button>
       </form>
     </main>

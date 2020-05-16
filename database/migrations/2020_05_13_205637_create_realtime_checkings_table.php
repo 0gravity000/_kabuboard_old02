@@ -24,6 +24,8 @@ class CreateRealtimeCheckingsTable extends Migration
             $table->dateTime('rate_checkingat')->nullable();   //前回(1分前)現在値
             $table->float('pre_rate')->nullable();   //前回(1分前)現在値
             $table->dateTime('pre_rate_checkingat')->nullable();   //前回(1分前)現在値
+            $table->boolean('price_match_flag');
+            $table->boolean('rate_match_flag');
             $table->timestamps();
         });
     }

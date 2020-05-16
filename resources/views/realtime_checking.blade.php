@@ -144,7 +144,7 @@
           </div>
           <div class="btn-group mr-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">
-              <a href="/realtime/update">更新</a>
+              <a href="/realtime/update_checking">更新</a>
             </button>
           </div>
           <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
