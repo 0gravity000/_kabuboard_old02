@@ -20,15 +20,15 @@ class CreateStocksTable extends Migration
             $table->integer('market_id');
             $table->integer('industry_id');
             //minitly check
-            $table->integer('price')->nullable();
+            $table->float('price')->nullable();
             $table->float('rate')->nullable();
             //daily check
-            $table->integer('pre_end_price')->nullable();
-            $table->integer('start_price')->nullable();
-            $table->integer('end_price')->nullable();
-            $table->integer('highest_price')->nullable();
-            $table->integer('lowest_price')->nullable();
-            $table->integer('volume')->nullable();
+            $table->float('pre_end_price')->nullable();
+            $table->float('start_price')->nullable();
+            $table->float('end_price')->nullable();
+            $table->float('highest_price')->nullable();
+            $table->float('lowest_price')->nullable();
+            $table->bigInteger('volume')->nullable();
             
             $table->timestamps();
         });

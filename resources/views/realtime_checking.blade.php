@@ -142,6 +142,11 @@
               <a href="/realtime_setting">設定画面へ</a>
             </button>
           </div>
+          <div class="btn-group mr-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary">
+              <a href="/realtime/update">更新</a>
+            </button>
+          </div>
           <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
             <span data-feather="calendar"></span>
             This week
@@ -173,7 +178,7 @@
             <td>{{ $realtime_checking->price }}</td>
             <td>{{ $realtime_checking->realtime_setting->upperlimit }}</td>
             <td>{{ $realtime_checking->realtime_setting->lowerlimit }}</td>
-            <td>{{ $realtime_checking->changerate }}</td>
+            <td>{{ $realtime_checking->rate }}</td>
             <td>{{ $realtime_checking->realtime_setting->changerate }}</td>
             </tr>
             @endforeach

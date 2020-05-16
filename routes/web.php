@@ -17,7 +17,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth    ::routes();
+Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
@@ -29,3 +29,4 @@ Route::get('/realtime/create', 'RealtimeController@create');
 Route::post('/realtime/store', 'RealtimeController@store');
 Route::get('/realtime/destroy/{user_id}/{code_id}', 'RealtimeController@destroy');
 Route::get('/realtime/edit', 'RealtimeController@edit');
+Route::get('/realtime/update', 'RealtimeController@update');

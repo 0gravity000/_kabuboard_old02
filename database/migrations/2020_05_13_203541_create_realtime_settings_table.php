@@ -17,9 +17,9 @@ class CreateRealtimeSettingsTable extends Migration
             $table->id();
             $table->integer('user_id');
             $table->integer('stock_id');
-            $table->integer('upperlimit')->nullable();  //上限値
+            $table->float('upperlimit')->nullable();  //上限値
             $table->dateTime('upperlimit_settingat')->nullable();
-            $table->integer('lowerlimit')->nullable();  //下限値
+            $table->float('lowerlimit')->nullable();  //下限値
             $table->dateTime('lowerlimit_settingat')->nullable();
             $table->float('changerate')->nullable();    //変化率
             $table->dateTime('changerate_changerate')->nullable();

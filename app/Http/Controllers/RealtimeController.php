@@ -6,8 +6,8 @@ use App\RealtimeSetting;
 use Illuminate\Http\Request;
 
 use App\Stock;
-//use App\Code;
 use App\RealtimeChecking;
+use App\Events\MinitlyStocksCheck;
 
 class RealtimeController extends Controller
 {
@@ -76,8 +76,8 @@ class RealtimeController extends Controller
         $realtime_checking->realtime_setting_id = $realtime_setting->id;
         $realtime_checking->save();
 
-        $realtime_settings = RealtimeSetting::all();
-        return redirect('/realtime_checking');
+        //$realtime_settings = RealtimeSetting::all();
+        return redirect('/realtime_setting');
     }
 
     /**
@@ -111,7 +111,9 @@ class RealtimeController extends Controller
      */
     public function update(Request $request, RealtimeSetting $realtimeSetting)
     {
-        //
+        event(new MinitlyStocksCheck());
+
+        return redirect('/realtime_checking');
     }
 
     /**
