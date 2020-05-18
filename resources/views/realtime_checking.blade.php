@@ -180,12 +180,24 @@
             <td>{{ $realtime_checking->realtime_setting->stock->name }}</td>
             <td>{{ $realtime_checking->price }}</td>
             <td>{{ $realtime_checking->realtime_setting->upperlimit }}</td>
-            <td>{{ $realtime_checking->realtime_setting->ismatched_upperlimit }}</td>
+              @if ($realtime_checking->realtime_setting->ismatched_upperlimit)
+                <td>条件成立</td>
+              @else
+                <td>監視中</td>
+              @endif
             <td>{{ $realtime_checking->realtime_setting->lowerlimit }}</td>
-            <td>{{ $realtime_checking->realtime_setting->ismatched_lowerlimit }}</td>
+              @if ($realtime_checking->realtime_setting->ismatched_lowerlimit)
+                <td>条件成立</td>
+              @else
+                <td>監視中</td>
+              @endif
             <td>{{ $realtime_checking->rate }}</td>
             <td>{{ $realtime_checking->realtime_setting->changerate }}</td>
-            <td>{{ $realtime_checking->realtime_setting->ismatched_changerate }}</td>
+              @if ($realtime_checking->realtime_setting->ismatched_changerate )
+                <td>条件成立</td>
+              @else
+                <td>監視中</td>
+              @endif
             </tr>
             @endforeach
         </tbody>

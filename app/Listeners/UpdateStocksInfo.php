@@ -144,6 +144,7 @@ class UpdateStocksInfo
                         $matched_history = new MatchedHistory;
                         $matched_history->realtime_setting_id = $realtime_checking->realtime_setting->id;
                         $matched_history->matchtype_id = Matchtype::where('type', 1)->first()->id;
+                        $matched_history->memo = $realtime_checking->price;
                         $matched_history->matchedat = $realtime_checking->price_checkingat;
                         $matched_history->save();
                     }
@@ -160,6 +161,7 @@ class UpdateStocksInfo
                         $matched_history = new MatchedHistory;
                         $matched_history->realtime_setting_id = $realtime_checking->realtime_setting->id;
                         $matched_history->matchtype_id = Matchtype::where('type', 2)->first()->id;
+                        $matched_history->memo = $realtime_checking->price;
                         $matched_history->matchedat = $realtime_checking->price_checkingat;
                         $matched_history->save();
                     }
@@ -177,6 +179,7 @@ class UpdateStocksInfo
                         $matched_history = new MatchedHistory;
                         $matched_history->realtime_setting_id = $realtime_checking->realtime_setting->id;
                         $matched_history->matchtype_id = Matchtype::where('type', 3)->first()->id;
+                        $matched_history->memo = $realtime_checking->rate;
                         $matched_history->matchedat = $realtime_checking->rate_checkingat;
                         $matched_history->save();
                     }    

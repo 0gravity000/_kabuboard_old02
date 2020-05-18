@@ -17,6 +17,7 @@ class CreateMatchedHistoriesTable extends Migration
             $table->id();
             $table->integer('realtime_setting_id');
             $table->integer('matchtype_id');
+            $table->string('memo');
             $table->dateTime('matchedat')->nullable();
             $table->timestamps();
         });

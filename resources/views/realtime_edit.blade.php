@@ -88,18 +88,22 @@
           <input class="form-control" name="price" id="disabledInput" type="text" placeholder={{ $realtime_setting->stock->price }} disabled>
         </div>
         <div class="form-group">
+          <label for="rate">変化率</label>
+          <input class="form-control" name="rate" id="disabledInput" type="text" placeholder={{ $realtime_setting->stock->rate }} disabled>
+        </div>
+        <div class="form-group">
           <label for="upperlimit">上限値</label>
-          <input type="text" class="form-control" name="upperlimit">
+          <input type="text" class="form-control" name="upperlimit" value={{ $realtime_setting->upperlimit }}>
           <small class="form-text text-muted">上限値（円）を設定してください</small>
         </div>
         <div class="form-group">
           <label for="lowerlimit">下限値</label>
-          <input type="text" class="form-control" name="lowerlimit">
+          <input type="text" class="form-control" name="lowerlimit" value={{ $realtime_setting->lowerlimit }}>
           <small class="form-text text-muted">下限値（円）を設定してください</small>
         </div>
         <div class="form-group">
           <label for="changerate">変化率</label>
-          <input type="text" class="form-control" name="changerate">
+          <input type="text" class="form-control" name="changerate"  value={{ $realtime_setting->changerate }}>
           <small class="form-text text-muted">変化率（％）を設定してください</small>
         </div>
         <input type="hidden" name="id" value="{{ $realtime_setting->id }}">

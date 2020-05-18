@@ -108,11 +108,9 @@ class RealtimeController extends Controller
      * @param  \App\RealtimeSetting  $realtimeSetting
      * @return \Illuminate\Http\Response
      */
-    public function edit($user_id, $stock_id)
+    public function edit($id)
     {
-        $realtime_setting = RealtimeSetting::where('user_id', $user_id)
-                                ->where('stock_id', $stock_id)
-                                ->first();
+        $realtime_setting = RealtimeSetting::where('id', $id)->first();
 
         return view('realtime_edit', compact('realtime_setting'));
     }
@@ -158,11 +156,9 @@ class RealtimeController extends Controller
      * @param  \App\RealtimeSetting  $realtimeSetting
      * @return \Illuminate\Http\Response
      */
-    public function destroy($user_id, $stock_id)
+    public function destroy($id)
     {
-        $realtime_setting = RealtimeSetting::where('user_id', $user_id)
-                                ->where('stock_id', $stock_id)
-                                ->first();
+        $realtime_setting = RealtimeSetting::where('id', $id)->first();
         //dd($realtime_setting);
         $realtime_setting->delete();
         return redirect('/realtime_setting');

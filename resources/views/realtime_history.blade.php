@@ -158,6 +158,7 @@
             <th>コード</th>
             <th>銘柄名</th>
             <th>成立条件</th>
+            <th>詳細</th>
             <th>成立日時</th>
             <th>#</th>
             <th>#</th>
@@ -170,6 +171,7 @@
             <td>{{ $matched_history->realtime_setting->stock->code }}</td>
             <td>{{ $matched_history->realtime_setting->stock->name }}</td>
             <td>{{ $matched_history->matchtype->detail }}</td>
+            <td>{{ $matched_history->memo }}</td>
             <td>{{ $matched_history->matchedat }}</td>
             <td>#</td>
             <td>#</td>
