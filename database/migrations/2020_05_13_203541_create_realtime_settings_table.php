@@ -22,7 +22,10 @@ class CreateRealtimeSettingsTable extends Migration
             $table->float('lowerlimit')->nullable();  //下限値
             $table->dateTime('lowerlimit_settingat')->nullable();
             $table->float('changerate')->nullable();    //変化率
-            $table->dateTime('changerate_changerate')->nullable();
+            $table->dateTime('changerate_settingat')->nullable();
+            $table->boolean('ismatched_upperlimit');
+            $table->boolean('ismatched_lowerlimit');
+            $table->boolean('ismatched_changerate');
             $table->timestamps();
 
         });

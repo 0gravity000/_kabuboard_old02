@@ -9,6 +9,7 @@ use App\Stock;
 use App\RealtimeChecking;
 use App\Events\MinitlyStocksCheck;
 use DateTime;
+use App\MatchedHistory;
 
 class RealtimeController extends Controller
 {
@@ -27,6 +28,12 @@ class RealtimeController extends Controller
     {
         $realtime_settings = RealtimeSetting::all();
         return view('realtime_setting', compact('realtime_settings'));
+    }
+
+    public function index_history()
+    {
+        $matched_histories = MatchedHistory::all();
+        return view('realtime_history', compact('matched_histories'));
     }
 
     /**
@@ -70,13 +77,14 @@ class RealtimeController extends Controller
         //dd($code);
         $realtime_setting->user_id = 1;
         $realtime_setting->stock_id = $stocks->first()->id;
+        $realtime_setting->ismatched_upperlimit = false;
+        $realtime_setting->ismatched_lowerlimit = false;
+        $realtime_setting->ismatched_changerate = false;
         //dd($realtime_setting);
         $realtime_setting->save();
 
         $realtime_checking = new RealtimeChecking;
         $realtime_checking->realtime_setting_id = $realtime_setting->id;
-        $realtime_checking->price_match_flag = false;
-        $realtime_checking->rate_match_flag = false;
         $realtime_checking->save();
 
         //$realtime_settings = RealtimeSetting::all();
@@ -118,6 +126,7 @@ class RealtimeController extends Controller
      */
     public function update_checking(Request $request, RealtimeSetting $realtimeSetting)
     {
+        //リアルタイム株価、変化率をスクレイピング
         event(new MinitlyStocksCheck());
 
         return redirect('/realtime_checking');
@@ -136,7 +145,7 @@ class RealtimeController extends Controller
         $realtime_setting->lowerlimit_settingat = $now->format('Y-m-d H:i:s');
         $realtime_setting->changerate = request()->changerate;
         $now = new DateTime();
-        $realtime_setting->changerate_changerate = $now->format('Y-m-d H:i:s');
+        $realtime_setting->changerate_settingat = $now->format('Y-m-d H:i:s');
         $realtime_setting->save();
         //dd($realtime_setting);
 

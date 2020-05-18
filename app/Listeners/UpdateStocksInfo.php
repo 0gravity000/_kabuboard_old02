@@ -14,6 +14,8 @@ use App\RealtimeSetting;
 use App\Stock;
 use Goutte\Client;
 use DateTime;
+use App\MatchedHistory;
+use App\Matchtype;
 
 class UpdateStocksInfo
 {
@@ -42,9 +44,8 @@ class UpdateStocksInfo
             $stockcode = $realtime_setting->stock->code;
             $stock = Stock::where('id', $realtime_setting->stock->id)->first();
             $marketcode = $stock->market->code;
-            Log::debug('stockcode：'.$stockcode.' marketcode：'.$marketcode);
+            //Log::debug('stockcode：'.$stockcode.' marketcode：'.$marketcode);
 
-            //スクレイピング
             $marketmark = '.T';
             if ($marketcode == 8 or $marketcode == 9) {
               $marketmark = '.S';
@@ -57,52 +58,56 @@ class UpdateStocksInfo
             }
             $html = 'http://stocks.finance.yahoo.co.jp/stocks/detail/?code='.$stockcode.$marketmark;
 
+            //スクレイピング
             $client = new Client();   //composer require fabpot/goutte しておくこと
             $crawler = $client->request('GET', $html);
-            Log::debug($html);
+            //要検討 URLが存在しない場合はどうなる
+            //Log::debug($html);
 
             //日足用データ取得
             //終値
-            $price = $crawler->filter('table.stocksTable tr')->each(function ($node) {
+            $price = $crawler->filter('table.stocksTable tr')->each(function ($node) {  //戻り値は配列
                 $price_temp = $node->filter('td')->eq(1)->text();
                 return $price_temp;
             });
-            Log::debug($price);
+            //Log::debug($price);
 
             //比率　加工前データ +-xx（x.xx%）
             #stockinf > div.stocksDtl.clearFix > div.forAddPortfolio > table > tbody > tr > td.change > span.icoUpGreen.yjMSt
-            $ratestring = $crawler->filter('table.stocksTable tr')->each(function ($node) {
+            $ratestring = $crawler->filter('table.stocksTable tr')->each(function ($node) { //戻り値は配列
                 $temp = $node->filter('td.change span')->eq(1)->text(); //-xx（x｡xx%）
                 //dd($g_temp);
                 return $temp;
             });
-            Log::debug($ratestring);
+            //Log::debug($ratestring);
             //比率　加工後データ x.xx%
             $startpos = mb_strpos($ratestring[0], '（');
             $endpos = mb_strpos($ratestring[0], '%');
             $rate = mb_substr($ratestring[0], $startpos+1, ($endpos-$startpos)-1);
-            Log::debug($rate);
-      
+            //Log::debug($rate);
+
+            /* 日足用データ
             //前日終値
             //#detail > div.innerDate > div:nth-child(1) > dl > dd > strong
             $pre_end_price = $crawler->filter('#detail > div.innerDate > div:nth-child(1) > dl > dd > strong')->text();
-            Log::debug($pre_end_price);
+            //Log::debug($pre_end_price);
             //始値
                 //#detail > div.innerDate > div:nth-child(2) > dl > dd > strong      
             $start_price = $crawler->filter('#detail > div.innerDate > div:nth-child(2) > dl > dd > strong')->text();
-            Log::debug($start_price);
+            //Log::debug($start_price);
             //高値
             //#detail > div.innerDate > div:nth-child(3) > dl > dd > strong
             $highest_price = $crawler->filter('#detail > div.innerDate > div:nth-child(3) > dl > dd > strong')->text();
-            Log::debug($highest_price);
+            //Log::debug($highest_price);
             //安値
             $lowest_price = $crawler->filter('#detail > div.innerDate > div:nth-child(4) > dl > dd > strong')->text();
-            Log::debug($lowest_price);
+            //Log::debug($lowest_price);
+            //Log::debug($price.':'.$ratestring.':'.$pre_end_price.':'.$start_price.':'.$highest_price.':'.$lowest_price);
             //出来高
             //#detail > div.innerDate > div:nth-child(5) > dl > dd > strong
             $volume = $crawler->filter('#detail > div.innerDate > div:nth-child(5) > dl > dd > strong')->text();
-            Log::debug($volume);
-            //Log::debug($price.':'.$ratestring.':'.$pre_end_price.':'.$start_price.':'.$highest_price.':'.$lowest_price);
+            //Log::debug($volume);
+            */
 
             //DB登録 stocksテーブル            
             $stock->price = floatval(str_replace(',','',$price[0]));
@@ -122,6 +127,62 @@ class UpdateStocksInfo
             $realtime_checking->save();
 
         }   //realtime_checkings分ループ END
+
+        //条件成立かチェック
+        $realtime_checkings = RealtimeChecking::all();
+
+        foreach ($realtime_checkings as $realtime_checking) {
+            //上限値チェック
+            //dd($realtime_checking->realtime_setting->upperlimit);
+            if ($realtime_checking->realtime_setting->ismatched_upperlimit == false) {
+                if ($realtime_checking->realtime_setting->upperlimit != null) {
+                    if ($realtime_checking->price >= $realtime_checking->realtime_setting->upperlimit) {
+                        $realtime_setting = RealtimeSetting::where('id', $realtime_checking->realtime_setting_id)->first();
+                        $realtime_setting->ismatched_upperlimit = true;
+                        $realtime_setting->save();
+
+                        $matched_history = new MatchedHistory;
+                        $matched_history->realtime_setting_id = $realtime_checking->realtime_setting->id;
+                        $matched_history->matchtype_id = Matchtype::where('type', 1)->first()->id;
+                        $matched_history->matchedat = $realtime_checking->price_checkingat;
+                        $matched_history->save();
+                    }
+                }
+            }
+            //下限値チェック
+            if ($realtime_checking->realtime_setting->ismatched_lowerlimit == false) {
+                if ($realtime_checking->realtime_setting->lowerlimit) {
+                    if ($realtime_checking->price <= $realtime_checking->realtime_setting->lowerlimit) {
+                        $realtime_setting = RealtimeSetting::where('id', $realtime_checking->realtime_setting_id)->first();
+                        $realtime_setting->ismatched_lowerlimit = true;
+                        $realtime_setting->save();
+                        
+                        $matched_history = new MatchedHistory;
+                        $matched_history->realtime_setting_id = $realtime_checking->realtime_setting->id;
+                        $matched_history->matchtype_id = Matchtype::where('type', 2)->first()->id;
+                        $matched_history->matchedat = $realtime_checking->price_checkingat;
+                        $matched_history->save();
+                    }
+                }
+            }
+            //比率チェック
+            if ($realtime_checking->realtime_setting->ismatched_changerate == false) {
+                if ($realtime_checking->realtime_setting->changerate) {
+                    if (abs($realtime_checking->pre_rate - $realtime_checking->rate) >= abs($realtime_checking->realtime_setting->changerate)) {
+                        $realtime_setting = RealtimeSetting::where('id', $realtime_checking->realtime_setting_id)->first();
+                        $realtime_setting->ismatched_changerate = true;
+                        dd($realtime_checking->pre_rate - $realtime_checking->rate);
+                        $realtime_setting->save();
+
+                        $matched_history = new MatchedHistory;
+                        $matched_history->realtime_setting_id = $realtime_checking->realtime_setting->id;
+                        $matched_history->matchtype_id = Matchtype::where('type', 3)->first()->id;
+                        $matched_history->matchedat = $realtime_checking->rate_checkingat;
+                        $matched_history->save();
+                    }    
+                }
+            }
+        }
 
     }
 }

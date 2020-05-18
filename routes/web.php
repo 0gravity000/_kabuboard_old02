@@ -31,3 +31,4 @@ Route::get('/realtime/destroy/{user_id}/{stock_id}', 'RealtimeController@destroy
 Route::get('/realtime/edit/{user_id}/{stock_id}', 'RealtimeController@edit');
 Route::get('/realtime/update_checking', 'RealtimeController@update_checking');
 Route::post('/realtime/update_setting', 'RealtimeController@update_setting');
+Route::get('/realtime_history', 'RealtimeController@index_history');

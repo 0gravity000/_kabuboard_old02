@@ -157,23 +157,23 @@
         <tr>
             <th>コード</th>
             <th>銘柄名</th>
-            <th>上限値（円）</th>
-            <th>下限値（円）</th>
-            <th>変化率（％）</th>
+            <th>成立条件</th>
+            <th>成立日時</th>
+            <th>#</th>
             <th>#</th>
             <th>#</th>
         </tr>
         </thead>
         <tbody>
-            @foreach($realtime_settings as $realtime_setting)
+            @foreach($matched_histories as $matched_history)
             <tr>
-            <td>{{ $realtime_setting->stock->code }}</td>
-            <td>{{ $realtime_setting->stock->name }}</td>
-            <td>{{ $realtime_setting->upperlimit }}</td>
-            <td>{{ $realtime_setting->lowerlimit }}</td>
-            <td>{{ $realtime_setting->changerate }}</td>
-            <td><a href="/realtime/edit/{{$realtime_setting->user_id}}/{{$realtime_setting->stock_id}}">編集</a></td>
-            <td><a href="/realtime/destroy/{{$realtime_setting->user_id}}/{{$realtime_setting->stock_id}}">削除</a></td>
+            <td>{{ $matched_history->realtime_setting->stock->code }}</td>
+            <td>{{ $matched_history->realtime_setting->stock->name }}</td>
+            <td>{{ $matched_history->matchtype->detail }}</td>
+            <td>{{ $matched_history->matchedat }}</td>
+            <td>#</td>
+            <td>#</td>
+            <td>#</td>
             </tr>
             @endforeach
         </tbody>

@@ -21,6 +21,11 @@ class RealtimeSetting extends Model
     public function realtime_checking()
     {
         return $this->hasOne('App\RealtimeChecking');
+    }
+    
+    public function matchedhistry()
+    {
+        return $this->hasOne('App\MatchedHistory');
     }    
    
 }

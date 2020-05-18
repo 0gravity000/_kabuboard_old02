@@ -79,9 +79,9 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="/realtime_history">
               <span data-feather="users"></span>
-              Customers
+              履歴
             </a>
           </li>
           <li class="nav-item">
@@ -163,11 +163,14 @@
         <tr>
             <th>コード</th>
             <th>銘柄名</th>
-            <th>現在値</th>
-            <th>上限値（円）</th>
-            <th>下限値（円）</th>
-            <th>変化率</th>
+            <th>現在値（円）</th>
+            <th>設定値：上限</th>
+            <th>!</th>
+            <th>設定値：下限</th>
+            <th>!</th>
             <th>変化率（％）</th>
+            <th>設定値：変化率</th>
+            <th>!</th>
         </tr>
         </thead>
         <tbody>
@@ -177,9 +180,12 @@
             <td>{{ $realtime_checking->realtime_setting->stock->name }}</td>
             <td>{{ $realtime_checking->price }}</td>
             <td>{{ $realtime_checking->realtime_setting->upperlimit }}</td>
+            <td>{{ $realtime_checking->realtime_setting->ismatched_upperlimit }}</td>
             <td>{{ $realtime_checking->realtime_setting->lowerlimit }}</td>
+            <td>{{ $realtime_checking->realtime_setting->ismatched_lowerlimit }}</td>
             <td>{{ $realtime_checking->rate }}</td>
             <td>{{ $realtime_checking->realtime_setting->changerate }}</td>
+            <td>{{ $realtime_checking->realtime_setting->ismatched_changerate }}</td>
             </tr>
             @endforeach
         </tbody>
