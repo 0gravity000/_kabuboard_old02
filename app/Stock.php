@@ -22,4 +22,9 @@ class Stock extends Model
     {
         return $this->hasMany('App\RealtimeSettings');
     }    
+
+    public function daily_histories()
+    {
+        return $this->hasMany('App\DailyHistory');
+    }    
 }

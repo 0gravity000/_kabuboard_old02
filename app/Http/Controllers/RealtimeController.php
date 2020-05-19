@@ -32,7 +32,7 @@ class RealtimeController extends Controller
 
     public function index_history()
     {
-        $matched_histories = MatchedHistory::all();
+        $matched_histories = MatchedHistory::orderBy('matchedat', 'desc')->get();
         return view('realtime_history', compact('matched_histories'));
     }
 

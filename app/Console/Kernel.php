@@ -6,6 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 use App\Events\MinitlyStocksCheck;
+use App\Events\DailyStocksCheck;
 use \App\InvokeUpdateStocksInfo;
 
 class Kernel extends ConsoleKernel
@@ -30,6 +31,11 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             event(new MinitlyStocksCheck());
         })->everyMinute()->between('8:58', '15:30');
+
+        $schedule->call(function () {
+            event(new DailyStocksCheck());
+        })->dailyAt('16:00');;
+
         //$schedule->call(new InvokeUpdateStocksInfo)->everyMinute();
         // $schedule->command('inspire')->hourly();
     }

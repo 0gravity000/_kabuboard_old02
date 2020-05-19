@@ -18,6 +18,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\MinitlyStocksCheck' => [
             'App\Listeners\UpdateStocksInfo',
         ],
+        'App\Events\DailyStocksCheck' => [
+            'App\Listeners\StoreDailyStocksInfo',
+        ],
         /*
         Registered::class => [
             SendEmailVerificationNotification::class,

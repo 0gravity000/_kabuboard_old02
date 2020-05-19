@@ -64,13 +64,14 @@ class UpdateStocksInfo
             //要検討 URLが存在しない場合はどうなる
             //Log::debug($html);
 
-            //日足用データ取得
+            //毎分用データ取得
             //終値
             $price = $crawler->filter('table.stocksTable tr')->each(function ($node) {  //戻り値は配列
                 $price_temp = $node->filter('td')->eq(1)->text();
                 return $price_temp;
             });
             //Log::debug($price);
+            //7:00-9:00はYahooサイトはメンテナンス状態で通常の値でなくなるためDB登録しないようにする
 
             //比率　加工前データ +-xx（x.xx%）
             #stockinf > div.stocksDtl.clearFix > div.forAddPortfolio > table > tbody > tr > td.change > span.icoUpGreen.yjMSt
@@ -184,7 +185,7 @@ class UpdateStocksInfo
                     }    
                 }
             }
-        }
+        }   //条件成立かチェック END
 
-    }
+    }   //public function handle END
 }
