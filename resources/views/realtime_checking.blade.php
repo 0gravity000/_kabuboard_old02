@@ -169,7 +169,8 @@
             <th>設定値：下限</th>
             <th>!</th>
             <th>変化率（％）</th>
-            <th>設定値：変化率</th>
+            <th>⊿変化率</th>
+            <th>設定値：⊿変化率</th>
             <th>!</th>
         </tr>
         </thead>
@@ -181,20 +182,24 @@
             <td>{{ $realtime_checking->price }}</td>
             <td>{{ $realtime_checking->realtime_setting->upperlimit }}</td>
               @if ($realtime_checking->realtime_setting->ismatched_upperlimit)
-                <td>条件成立</td>
+              <td><a href="/realtime/edit/{{$realtime_checking->realtime_setting->id}}">条件成立</a></td>
               @else
                 <td>監視中</td>
               @endif
             <td>{{ $realtime_checking->realtime_setting->lowerlimit }}</td>
               @if ($realtime_checking->realtime_setting->ismatched_lowerlimit)
-                <td>条件成立</td>
+              <td><a href="/realtime/edit/{{$realtime_checking->realtime_setting->id}}">条件成立</a></td>
               @else
                 <td>監視中</td>
               @endif
             <td>{{ $realtime_checking->rate }}</td>
+            @php
+              $deltarate = abs($realtime_checking->rate - $realtime_checking->pre_rate);
+            @endphp
+            <td>{{ $deltarate }}</td>
             <td>{{ $realtime_checking->realtime_setting->changerate }}</td>
               @if ($realtime_checking->realtime_setting->ismatched_changerate )
-                <td>条件成立</td>
+                <td><a href="/realtime/edit/{{$realtime_checking->realtime_setting->id}}">条件成立</a></td>
               @else
                 <td>監視中</td>
               @endif

@@ -144,6 +144,9 @@ class RealtimeController extends Controller
         $realtime_setting->changerate = request()->changerate;
         $now = new DateTime();
         $realtime_setting->changerate_settingat = $now->format('Y-m-d H:i:s');
+        $realtime_setting->ismatched_upperlimit = false;
+        $realtime_setting->ismatched_lowerlimit = false;
+        $realtime_setting->ismatched_changerate = false;
         $realtime_setting->save();
         //dd($realtime_setting);
 

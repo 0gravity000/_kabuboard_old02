@@ -170,10 +170,9 @@ class UpdateStocksInfo
             //比率チェック
             if ($realtime_checking->realtime_setting->ismatched_changerate == false) {
                 if ($realtime_checking->realtime_setting->changerate) {
-                    if (abs($realtime_checking->pre_rate - $realtime_checking->rate) >= abs($realtime_checking->realtime_setting->changerate)) {
+                    if (abs($realtime_checking->rate - $realtime_checking->pre_rate) >= abs($realtime_checking->realtime_setting->changerate)) {
                         $realtime_setting = RealtimeSetting::where('id', $realtime_checking->realtime_setting_id)->first();
                         $realtime_setting->ismatched_changerate = true;
-                        dd($realtime_checking->pre_rate - $realtime_checking->rate);
                         $realtime_setting->save();
 
                         $matched_history = new MatchedHistory;
