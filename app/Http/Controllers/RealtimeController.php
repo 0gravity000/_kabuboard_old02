@@ -164,6 +164,10 @@ class RealtimeController extends Controller
         $realtime_setting = RealtimeSetting::where('id', $id)->first();
         //dd($realtime_setting);
         $realtime_setting->delete();
+
+        $realtime_checking = RealtimeChecking::where('realtime_setting_id', $id)->first();
+        $realtime_checking->delete();
+
         return redirect('/realtime_setting');
 
         //$realtime_settings = RealtimeSetting::all();

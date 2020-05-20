@@ -115,16 +115,33 @@ class UpdateStocksInfo
             $stock->rate = floatval($rate);
             $stock->save();
             //DB登録 realtime_checkingsテーブル            
-            $realtime_checking->pre_price = $realtime_checking->price;
-            $realtime_checking->pre_price_checkingat = $realtime_checking->price_checkingat;
-            $realtime_checking->price = floatval(str_replace(',','',$price[0]));
-            $now = new DateTime();
-            $realtime_checking->price_checkingat = $now->format('Y-m-d H:i:s');
-            $realtime_checking->pre_rate = $realtime_checking->rate;
-            $realtime_checking->pre_rate_checkingat = $realtime_checking->rate_checkingat;
-            $realtime_checking->rate = floatval($rate);
-            $now = new DateTime();
-            $realtime_checking->rate_checkingat = $now->format('Y-m-d H:i:s');
+            if ($realtime_checking->pre_price == null) {  //null //pre_priceが空の場合 最初の1回
+                $realtime_checking->price = $stock->price;
+                $now = new DateTime();
+                $realtime_checking->price_checkingat = $now->format('Y-m-d H:i:s');
+                $realtime_checking->pre_price = $realtime_checking->price;
+                $realtime_checking->pre_price_checkingat = $realtime_checking->price_checkingat;
+            } else {      //pre_priceに値が設定されている場合
+                $realtime_checking->pre_price = $realtime_checking->price;
+                $realtime_checking->pre_price_checkingat = $realtime_checking->price_checkingat;
+                $realtime_checking->price = $stock->price;
+                $now = new DateTime();
+                $realtime_checking->price_checkingat = $now->format('Y-m-d H:i:s');
+            }
+
+            if ($realtime_checking->pre_rate == null) { //null //pre_rateが空の場合 最初の1回
+                $realtime_checking->rate = $stock->rate;
+                $now = new DateTime();
+                $realtime_checking->rate_checkingat = $now->format('Y-m-d H:i:s');
+                $realtime_checking->pre_rate = $realtime_checking->rate;
+                $realtime_checking->pre_rate_checkingat = $realtime_checking->rate_checkingat;
+            } else {//rateに値が設定されている場合
+                $realtime_checking->pre_rate = $realtime_checking->rate;
+                $realtime_checking->pre_rate_checkingat = $realtime_checking->rate_checkingat;
+                $realtime_checking->rate = $stock->rate;
+                $now = new DateTime();
+                $realtime_checking->rate_checkingat = $now->format('Y-m-d H:i:s');
+            }
             $realtime_checking->save();
 
         }   //realtime_checkings分ループ END
