@@ -173,7 +173,7 @@
             <td>{{ $realtime_setting->lowerlimit }}</td>
             <td>{{ $realtime_setting->changerate }}</td>
             <td><a href="/realtime/edit/{{$realtime_setting->id}}">編集</a></td>
-            <td><a href="/realtime/destroy/{{$realtime_setting->id}}">削除</a></td>
+            <td><a href="/realtime/destroy_setting/{{$realtime_setting->id}}">削除</a></td>
             </tr>
             @endforeach
         </tbody>

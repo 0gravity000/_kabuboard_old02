@@ -159,7 +159,7 @@ class RealtimeController extends Controller
      * @param  \App\RealtimeSetting  $realtimeSetting
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy_setting($id)
     {
         $realtime_setting = RealtimeSetting::where('id', $id)->first();
         //dd($realtime_setting);
@@ -173,4 +173,18 @@ class RealtimeController extends Controller
         //$realtime_settings = RealtimeSetting::all();
         //return view('realtime', compact('realtime_settings'));
     }
+
+    public function destroy_history($id)
+    {
+        if ($id == 0) { //全銘柄削除
+            MatchedHistory::query()->delete();
+            return redirect('/realtime_history');
+        } else {
+            $matched_history = MatchedHistory::where('id', $id)->first();
+        }
+        //dd($realtime_setting);
+        $matched_history->delete();
+        return redirect('/realtime_history');
+    }
+
 }

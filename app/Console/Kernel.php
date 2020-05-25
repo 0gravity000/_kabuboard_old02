@@ -30,11 +30,11 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call(function () {
             event(new MinitlyStocksCheck());
-        })->everyMinute()->between('8:58', '15:30');
+        })->everyMinute()->between('9:01', '15:30');
 
         $schedule->call(function () {
             event(new DailyStocksCheck());
-        })->dailyAt('16:00');;
+        })->weekdays()->at('16:00');
 
         //$schedule->call(new InvokeUpdateStocksInfo)->everyMinute();
         // $schedule->command('inspire')->hourly();

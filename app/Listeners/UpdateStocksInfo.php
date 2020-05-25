@@ -72,6 +72,9 @@ class UpdateStocksInfo
             });
             //Log::debug($price);
             //7:00-9:00はYahooサイトはメンテナンス状態で通常の値でなくなるためDB登録しないようにする
+            if ($price == '---') {
+                exit; //何もしないで関数を抜ける
+            }
 
             //比率　加工前データ +-xx（x.xx%）
             #stockinf > div.stocksDtl.clearFix > div.forAddPortfolio > table > tbody > tr > td.change > span.icoUpGreen.yjMSt
