@@ -59,7 +59,6 @@ class StoreDailyStocksInfo
                 return $price_temp;
             });
             //Log::debug($price);
-            //7:00-9:00はYahooサイトはメンテナンス状態で通常の値でなくなるためDB登録しないようにする
 
             //比率　加工前データ +-xx（x.xx%）
             #stockinf > div.stocksDtl.clearFix > div.forAddPortfolio > table > tbody > tr > td.change > span.icoUpGreen.yjMSt
@@ -97,6 +96,10 @@ class StoreDailyStocksInfo
             $volume = $crawler->filter('#detail > div.innerDate > div:nth-child(5) > dl > dd > strong')->text();
             //Log::debug($volume);
 
+            //7:00-9:00はYahooサイトはメンテナンス状態で通常の値でなくなる(---)ためDB登録しないようにする
+            if (!is_numeric(floatval(str_replace(',','',$price[0])))) {
+                continue; //何もしないで関数を抜ける
+            }
             //DB登録 stocksテーブル            
             $stock->price = floatval(str_replace(',','',$price[0]));
             $stock->rate = floatval($rate);

@@ -33,3 +33,4 @@ Route::get('/realtime/update_checking', 'RealtimeController@update_checking');
 Route::post('/realtime/update_setting', 'RealtimeController@update_setting');
 Route::get('/realtime_history', 'RealtimeController@index_history');
 Route::get('/realtime/destroy_history/{id}', 'RealtimeController@destroy_history');
+Route::get('/signal_volume', 'SignalController@index_volume');

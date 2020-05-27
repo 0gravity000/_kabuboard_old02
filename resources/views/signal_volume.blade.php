@@ -135,28 +135,22 @@
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">リアルタイム銘柄監視</h1>
+        <h1 class="h2">シグナル（日足）</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">
-              <a href="/realtime_setting">設定画面へ</a>
+              <a href="/realtime/destroy_history/0">全履歴削除</a>
             </button>
           </div>
-          <div class="btn-group mr-2">
-            <button type="button" class="btn btn-sm btn-outline-secondary">
-              <a href="/realtime/update_checking">更新</a>
-            </button>
-          </div>
-          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-            <span data-feather="calendar"></span>
-            This week
-          </button>
         </div>
       </div>
 	  <!--
       <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 	  -->
-      <h2>リアルタイム監視</h2>
+      <h2>出来高急増</h2>
+      <h3>
+        基準日：{{ $baseday_str }}
+      </h3>
       <div class="table-responsive">
         <table class="table table-striped table-sm">
         <thead>
@@ -164,47 +158,31 @@
             <th>コード</th>
             <th>銘柄名</th>
             <th>現在値（円）</th>
-            <th>設定値：上限</th>
-            <th>!</th>
-            <th>設定値：下限</th>
-            <th>!</th>
-            <th>変化率（％）</th>
-            <th>⊿変化率</th>
-            <th>設定値：⊿変化率</th>
-            <th>!</th>
+            <th>⊿出来高（倍率）</th>
+            <th>出来高：基準日</th>
+            <th>出来高：前日</th>
+            <th>#</th>
         </tr>
         </thead>
         <tbody>
-            @foreach($realtime_checkings as $realtime_checking)
+          @foreach($daily_histories_0 as $daily_history_0)
+          @php
+              $daily_history_minus1 = $daily_histories_minus1->where('stock_id', $daily_history_0->stock_id)->first();
+              if($daily_history_minus1->volume == 0) {
+                $daily_history_minus1->volume = 1;
+              }
+              $deltavolume = floatval($daily_history_0->volume) / floatval($daily_history_minus1->volume)
+          @endphp
             <tr>
-            <td>{{ $realtime_checking->realtime_setting->stock->code }}</td>
-            <td>{{ $realtime_checking->realtime_setting->stock->name }}</td>
-            <td>{{ $realtime_checking->price }}</td>
-            <td>{{ $realtime_checking->realtime_setting->upperlimit }}</td>
-              @if ($realtime_checking->realtime_setting->ismatched_upperlimit)
-              <td><a href="/realtime/edit/{{$realtime_checking->realtime_setting->id}}">条件成立</a></td>
-              @else
-                <td>監視中</td>
-              @endif
-            <td>{{ $realtime_checking->realtime_setting->lowerlimit }}</td>
-              @if ($realtime_checking->realtime_setting->ismatched_lowerlimit)
-              <td><a href="/realtime/edit/{{$realtime_checking->realtime_setting->id}}">条件成立</a></td>
-              @else
-                <td>監視中</td>
-              @endif
-            <td>{{ $realtime_checking->rate }}</td>
-            @php
-              $deltarate = abs($realtime_checking->rate - $realtime_checking->pre_rate);
-            @endphp
-            <td>{{ $deltarate }}</td>
-            <td>{{ $realtime_checking->realtime_setting->changerate }}</td>
-              @if ($realtime_checking->realtime_setting->ismatched_changerate )
-                <td><a href="/realtime/edit/{{$realtime_checking->realtime_setting->id}}">条件成立</a></td>
-              @else
-                <td>監視中</td>
-              @endif
+            <td>{{ $daily_history_0->stock->code }}</td>
+            <td>{{ $daily_history_0->stock->name }}</td>
+            <td>{{ $daily_history_0->stock->price }}</td>
+            <td>{{ $deltavolume }}</td>
+            <td>{{ $daily_history_0->volume }}</td>
+            <td>{{ $daily_history_minus1->volume }}</td>
+            <td>#</td>
             </tr>
-            @endforeach
+          @endforeach
         </tbody>
         </table>
       </div>
@@ -215,11 +193,5 @@
       <script>window.jQuery || document.write('<script src="/docs/4.4/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
-        <script src="/js/dashboard.js"></script>
-        <script>  //x秒ごとにリロード 値更新のため0
-          setTimeout(function () {
-              location.reload();
-          }, 10000);
-        </script>
-  </body>
+        <script src="/js/dashboard.js"></script></body>
 </html>

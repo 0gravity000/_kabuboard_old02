@@ -118,7 +118,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="/signal_volume">
               <span data-feather="file-text"></span>
               出来高急増
             </a>

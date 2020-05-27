@@ -10,6 +10,7 @@ use App\RealtimeChecking;
 use App\Events\MinitlyStocksCheck;
 use DateTime;
 use App\MatchedHistory;
+use DateTimeZone;
 
 class RealtimeController extends Controller
 {
@@ -137,12 +138,15 @@ class RealtimeController extends Controller
 
         $realtime_setting->upperlimit = request()->upperlimit;
         $now = new DateTime();
+        $now->setTimeZone( new DateTimeZone('Asia/Tokyo'));
         $realtime_setting->upperlimit_settingat = $now->format('Y-m-d H:i:s');
         $realtime_setting->lowerlimit = request()->lowerlimit;
         $now = new DateTime();
+        $now->setTimeZone( new DateTimeZone('Asia/Tokyo'));
         $realtime_setting->lowerlimit_settingat = $now->format('Y-m-d H:i:s');
         $realtime_setting->changerate = request()->changerate;
         $now = new DateTime();
+        $now->setTimeZone( new DateTimeZone('Asia/Tokyo'));
         $realtime_setting->changerate_settingat = $now->format('Y-m-d H:i:s');
         $realtime_setting->ismatched_upperlimit = false;
         $realtime_setting->ismatched_lowerlimit = false;
