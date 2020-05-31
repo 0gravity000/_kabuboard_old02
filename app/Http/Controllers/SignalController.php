@@ -34,6 +34,21 @@ class SignalController extends Controller
             $now->subDay();
             //dd($now);
         }
+        //土日は除く
+        // dayOfWeek returns a number between 0 (sunday) and 6 (saturday)
+        while ($now->dayOfWeek == 6 or $now->dayOfWeek == 0) {
+            //-1日する
+            $now = $now->subDay();
+        }
+        //祝日は除く
+        $holidays = Holiday::all();
+        foreach ($holidays as $holiday) {
+            if ($now->toDateString() == $holiday->updated_at) {
+                //-1日する
+                $now = $now->subDay();
+            }
+        }
+
 
         //1営業日前 -1日する
         $one_bizday_ago = Carbon::create($now->year, $now->month, $now->day, $now->hour, $now->minute, $now->second);
