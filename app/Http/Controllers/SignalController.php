@@ -11,6 +11,12 @@ use App\Holiday;
 
 class SignalController extends Controller
 {
+
+    public function index()
+    {
+        return view('signal');
+    }
+
     /**
      * Display a listing of the resource.
      *

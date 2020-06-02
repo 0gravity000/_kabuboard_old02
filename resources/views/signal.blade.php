@@ -123,76 +123,39 @@
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">リアルタイム銘柄監視</h1>
+        <h1 class="h2">シグナル（日足）</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">
-              <a href="/realtime_setting">設定画面へ</a>
+              <a href="#">赤三兵</a>
             </button>
-          </div>
-          <div class="btn-group mr-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">
-              <a href="/realtime/update_checking">更新</a>
+              <a href="#">黒三兵</a>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">
+              <a href="/signal_volume">出来高急増</a>
             </button>
           </div>
-          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-            <span data-feather="calendar"></span>
-            This week
-          </button>
         </div>
       </div>
 	  <!--
       <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 	  -->
-      <h2>リアルタイム監視</h2>
+      <h2>シグナル（日足）</h2>
+      <h3>
+        xxx
+      </h3>
       <div class="table-responsive">
         <table class="table table-striped table-sm">
         <thead>
         <tr>
-            <th>コード</th>
-            <th>銘柄名</th>
-            <th>現在値（円）</th>
-            <th>設定値：上限</th>
-            <th>!</th>
-            <th>設定値：下限</th>
-            <th>!</th>
-            <th>変化率（％）</th>
-            <th>⊿変化率</th>
-            <th>設定値：⊿変化率</th>
-            <th>!</th>
+            <th>#</th>
         </tr>
         </thead>
         <tbody>
-            @foreach($realtime_checkings as $realtime_checking)
             <tr>
-            <td>{{ $realtime_checking->realtime_setting->stock->code }}</td>
-            <td>{{ $realtime_checking->realtime_setting->stock->name }}</td>
-            <td>{{ $realtime_checking->price }}</td>
-            <td>{{ $realtime_checking->realtime_setting->upperlimit }}</td>
-              @if ($realtime_checking->realtime_setting->ismatched_upperlimit)
-              <td><a href="/realtime/edit/{{$realtime_checking->realtime_setting->id}}">条件成立</a></td>
-              @else
-                <td>監視中</td>
-              @endif
-            <td>{{ $realtime_checking->realtime_setting->lowerlimit }}</td>
-              @if ($realtime_checking->realtime_setting->ismatched_lowerlimit)
-              <td><a href="/realtime/edit/{{$realtime_checking->realtime_setting->id}}">条件成立</a></td>
-              @else
-                <td>監視中</td>
-              @endif
-            <td>{{ $realtime_checking->rate }}</td>
-            @php
-              $deltarate = abs($realtime_checking->rate - $realtime_checking->pre_rate);
-            @endphp
-            <td>{{ $deltarate }}</td>
-            <td>{{ $realtime_checking->realtime_setting->changerate }}</td>
-              @if ($realtime_checking->realtime_setting->ismatched_changerate )
-                <td><a href="/realtime/edit/{{$realtime_checking->realtime_setting->id}}">条件成立</a></td>
-              @else
-                <td>監視中</td>
-              @endif
+            <td>#</td>
             </tr>
-            @endforeach
         </tbody>
         </table>
       </div>
@@ -203,11 +166,5 @@
       <script>window.jQuery || document.write('<script src="/docs/4.4/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
-        <script src="/js/dashboard.js"></script>
-        <script>  //x秒ごとにリロード 値更新のため0
-          setTimeout(function () {
-              location.reload();
-          }, 10000);
-        </script>
-  </body>
+        <script src="/js/dashboard.js"></script></body>
 </html>

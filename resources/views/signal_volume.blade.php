@@ -106,21 +106,9 @@
         </h6>
         <ul class="nav flex-column mb-2">
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="/signal">
               <span data-feather="file-text"></span>
-              赤三兵
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              黒三兵
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/signal_volume">
-              <span data-feather="file-text"></span>
-              出来高急増
+              シグナル（日足）
             </a>
           </li>
           <li class="nav-item">
@@ -139,7 +127,13 @@
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">
-              <a href="/realtime/destroy_history/0">全履歴削除</a>
+              <a href="#">赤三兵</a>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">
+              <a href="#">黒三兵</a>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">
+              <a href="/signal_volume">出来高急増</a>
             </button>
           </div>
         </div>
