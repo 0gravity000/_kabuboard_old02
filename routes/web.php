@@ -35,3 +35,4 @@ Route::get('/realtime_history', 'RealtimeController@index_history');
 Route::get('/realtime/destroy_history/{id}', 'RealtimeController@destroy_history');
 Route::get('/signal', 'SignalController@index');
 Route::get('/signal_volume', 'SignalController@index_volume');
+Route::get('/signal_debug', 'SignalController@index_debug');

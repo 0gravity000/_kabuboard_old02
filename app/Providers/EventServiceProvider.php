@@ -21,6 +21,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\DailyStocksCheck' => [
             'App\Listeners\StoreDailyStocksInfo',
         ],
+        'App\Events\DailyDBStoreCheck' => [
+            'App\Listeners\DeleteExtraRecodes',
+        ],
         /*
         Registered::class => [
             SendEmailVerificationNotification::class,
