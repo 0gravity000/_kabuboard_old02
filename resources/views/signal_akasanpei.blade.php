@@ -127,10 +127,7 @@
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">
-              <a href="/signal_debug">debug</a>
-            </button>
-            <button type="button" class="btn btn-sm btn-outline-secondary">
-              <a href="/signal_akasanpei">赤三兵</a>
+              <a href="#">赤三兵</a>
             </button>
             <button type="button" class="btn btn-sm btn-outline-secondary">
               <a href="#">黒三兵</a>
@@ -144,21 +141,39 @@
 	  <!--
       <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 	  -->
-      <h2>シグナル（日足）</h2>
+      <h2>赤三兵</h2>
       <h3>
-        xxx
+        基準日：{{ $date_array[0] }}
       </h3>
       <div class="table-responsive">
         <table class="table table-striped table-sm">
         <thead>
         <tr>
+            <th>コード</th>
+            <th>銘柄名</th>
+            <th>⊿：現在値（円）</th>
+            <th>現在値（円）</th>
+            <th>現在値：1営業日前</th>
+            <th>現在値：2営業日前</th>
+            <th>現在値：3営業日前</th>
             <th>#</th>
         </tr>
         </thead>
         <tbody>
+          @foreach($akasan_disp_array as $akasan_elm)
+          @php
+          @endphp
             <tr>
+            <td>{{ $akasan_elm[1] }}</td>
+            <td>{{ $akasan_elm[2] }}</td>
+            <td>{{ $akasan_elm[3] }}</td>
+            <td>{{ $akasan_elm[4] }}</td>
+            <td>{{ $akasan_elm[5] }}</td>
+            <td>{{ $akasan_elm[6] }}</td>
+            <td>{{ $akasan_elm[7] }}</td>
             <td>#</td>
             </tr>
+          @endforeach
         </tbody>
         </table>
       </div>
