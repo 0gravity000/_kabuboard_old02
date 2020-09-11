@@ -133,7 +133,7 @@
               <a href="/signal_akasanpei">赤三兵</a>
             </button>
             <button type="button" class="btn btn-sm btn-outline-secondary">
-              <a href="#">黒三兵</a>
+              <a href="/signal_kurosanpei">黒三兵</a>
             </button>
             <button type="button" class="btn btn-sm btn-outline-secondary">
               <a href="/signal_volume">出来高急増</a>

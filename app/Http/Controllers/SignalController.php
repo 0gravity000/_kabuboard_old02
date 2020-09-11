@@ -247,6 +247,136 @@ class SignalController extends Controller
         return view('signal_akasanpei', compact('akasan_disp_array', 'date_array'));
     }
 
+    public function index_kurosanpei()
+    {
+        //現在
+        $now = Carbon::now(new DateTimeZone('Asia/Tokyo'));
+        //dd($now);
+        //比較用
+        $first = Carbon::create($now->year, $now->month, $now->day, 16, 30, 0);
+        //dd($first);
+        $second = Carbon::create($now->year, $now->month, $now->day, 23, 59, 59);
+        //dd($second);
+
+        //基準日を算出vvv
+        if ($now->greaterThanOrEqualTo($first) && $now->lessThanOrEqualTo($second)) {
+            //現在時刻が16:30:00-23:59:59なら基準日はそのまま
+        } else {
+            //現在時刻が00:00-16:29なら基準日は-1日
+            $now->subDay();
+            //dd($now);
+        }
+        //土日は除く
+        // dayOfWeek returns a number between 0 (sunday) and 6 (saturday)
+        while ($now->dayOfWeek == 6 or $now->dayOfWeek == 0) {
+            //-1日する
+            $now = $now->subDay();
+        }
+        //祝日は除く
+        $holidays = Holiday::all();
+        foreach ($holidays as $holiday) {
+            if ($now->toDateString() == $holiday->updated_at) {
+                //-1日する
+                $now = $now->subDay();
+            }
+        }
+        //基準日を算出^^^
+
+        //最初に全銘柄分のstock_idと日付を格納した配列を作成
+        $baseday_str = $now->toDateString();
+        //dd($now, $one_bizday_ago);
+        $daily_histories_0_buf = DailyHistory::where('updated_at', 'LIKE', "%$baseday_str%")->get();
+        //dd($daily_histories_0_buf);
+        $array_0 = array();
+        $array_temp = array();
+        foreach ($daily_histories_0_buf as $daily_history_0_buf) {
+            $array_temp = array('stock_id' => $daily_history_0_buf->stock_id,
+                                $baseday_str => $daily_history_0_buf->price);
+            array_push($array_0, $array_temp);
+            unset($array_temp);
+        }
+        //dd($array_0);
+
+        //黒三兵判定処理
+        $kurosan_array = $array_0;   //配列をコピー
+        $date_str = $baseday_str;
+        $kurosan_array_buf = array();    //配列を初期化
+        $carbondate = $now;
+        $date_array = array();
+        array_push($date_array, $baseday_str);
+        //３営業日分の現在値をチェックする
+        for ($bizdayidx=0; $bizdayidx < 3; $bizdayidx++) { 
+
+            //n営業日前(-1日する)の算出vvv
+            $n_bizday_ago = Carbon::create($carbondate->year, $carbondate->month, $carbondate->day, $carbondate->hour, $carbondate->minute, $carbondate->second);
+            $n_bizday_ago = $n_bizday_ago->subDay();
+            //土日は除く
+            // dayOfWeek returns a number between 0 (sunday) and 6 (saturday)
+            while ($n_bizday_ago->dayOfWeek == 6 or $n_bizday_ago->dayOfWeek == 0) {
+                //-1日する
+                $n_bizday_ago = $n_bizday_ago->subDay();
+            }
+            //祝日は除く
+            $holidays = Holiday::all();
+            foreach ($holidays as $holiday) {
+                if ($n_bizday_ago->toDateString() == $holiday->updated_at) {
+                    //-1日する
+                    $n_bizday_ago = $n_bizday_ago->subDay();
+                }
+            }
+            $n_bizday_ago_str = $n_bizday_ago->toDateString();
+            //var_dump($bizdayidx);
+            //n営業日前(-1日する)の算出^^^
+
+            //全銘柄分ループするvvv
+            for ($arrayidx=0; $arrayidx < count($kurosan_array); $arrayidx++) { 
+                $stock_id = $kurosan_array[$arrayidx]['stock_id'];
+                //var_dump($stock_id);
+                $price = $kurosan_array[$arrayidx][$date_str];
+                //dd($stock_id);
+
+                $daily_history_n_ago_buf = DailyHistory::where('updated_at', 'LIKE', "%$n_bizday_ago_str%")
+                                                            ->where('stock_id', $stock_id)
+                                                            ->first();
+                //黒三兵かチェックする
+                if ($daily_history_n_ago_buf->price > $price) {
+                    $kurosan_array[$arrayidx][$n_bizday_ago_str] = $daily_history_n_ago_buf->price;
+                    array_push($kurosan_array_buf, $kurosan_array[$arrayidx]);
+                    //dd($kurosan_array_buf);
+                }
+            }   //全銘柄分ループ^^^
+
+            $kurosan_array = $kurosan_array_buf;
+            $kurosan_array_buf = array();    //空にする
+            $date_str = $n_bizday_ago_str;
+            array_push($date_array, $date_str);
+            $carbondate = $n_bizday_ago;
+            //dd($kurosan_array_buf);
+        }  //n営業日前(-1日する)の算出^^^
+        //dd($kurosan_array);
+
+        //取得した配列を表示用に加工する
+        $kurosan_disp_array = array();
+        $array_temp = array();
+        for ($arrayidx=0; $arrayidx < count($kurosan_array); $arrayidx++) {
+            $stock_id = $kurosan_array[$arrayidx]['stock_id'];
+            $code = DailyHistory::where('stock_id', $stock_id)->first()->stock->code;
+            $name = DailyHistory::where('stock_id', $stock_id)->first()->stock->name;
+            $price_0 = $kurosan_array[$arrayidx][$date_array[0]];
+            $price_1 = $kurosan_array[$arrayidx][$date_array[1]];
+            $price_2 = $kurosan_array[$arrayidx][$date_array[2]];
+            $price_3 = $kurosan_array[$arrayidx][$date_array[3]];
+            $price_delta = floatval($price_0) - floatval($price_3);
+            //$kurosan_array[$arrayidx]['price_delta'] = $price_delta;
+
+            $array_temp = array($stock_id, $code, $name, $price_delta, $price_0, $price_1, $price_2, $price_3);
+            array_push($kurosan_disp_array, $array_temp);
+            unset($array_temp);
+        }
+        //dd($kurosan_disp_array);
+        return view('signal_kurosanpei', compact('kurosan_disp_array', 'date_array'));
+    }
+
     public function index_debug()
     {
 

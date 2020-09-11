@@ -141,9 +141,9 @@
 	  <!--
       <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 	  -->
-      <h2>出来高急増</h2>
+      <h2>黒三兵</h2>
       <h3>
-        基準日：{{ $baseday_str }}
+        基準日：{{ $date_array[0] }}
       </h3>
       <div class="table-responsive">
         <table class="table table-striped table-sm">
@@ -151,29 +151,26 @@
         <tr>
             <th>コード</th>
             <th>銘柄名</th>
+            <th>⊿：現在値（円）</th>
             <th>現在値（円）</th>
-            <th>⊿出来高（倍率）</th>
-            <th>出来高：基準日</th>
-            <th>出来高：前日</th>
+            <th>現在値：1営業日前</th>
+            <th>現在値：2営業日前</th>
+            <th>現在値：3営業日前</th>
             <th>#</th>
         </tr>
         </thead>
         <tbody>
-          @foreach($daily_histories_0 as $daily_history_0)
+          @foreach($kurosan_disp_array as $kurosan_elm)
           @php
-              $daily_history_minus1 = $daily_histories_minus1->where('stock_id', $daily_history_0->stock_id)->first();
-              if($daily_history_minus1->volume == 0) {
-                $daily_history_minus1->volume = 1;
-              }
-              $deltavolume = floatval($daily_history_0->volume) / floatval($daily_history_minus1->volume)
           @endphp
             <tr>
-            <td>{{ $daily_history_0->stock->code }}</td>
-            <td>{{ $daily_history_0->stock->name }}</td>
-            <td>{{ $daily_history_0->stock->price }}</td>
-            <td>{{ $deltavolume }}</td>
-            <td>{{ $daily_history_0->volume }}</td>
-            <td>{{ $daily_history_minus1->volume }}</td>
+            <td>{{ $kurosan_elm[1] }}</td>
+            <td>{{ $kurosan_elm[2] }}</td>
+            <td>{{ $kurosan_elm[3] }}</td>
+            <td>{{ $kurosan_elm[4] }}</td>
+            <td>{{ $kurosan_elm[5] }}</td>
+            <td>{{ $kurosan_elm[6] }}</td>
+            <td>{{ $kurosan_elm[7] }}</td>
             <td>#</td>
             </tr>
           @endforeach
