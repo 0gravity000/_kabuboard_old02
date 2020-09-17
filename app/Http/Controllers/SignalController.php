@@ -318,7 +318,7 @@ class SignalController extends Controller
         $date_array = array();
         array_push($date_array, $baseday_str);
         //4営業日分の現在値をチェックする
-        for ($bizdayidx=0; $bizdayidx < 4; $bizdayidx++) { 
+        for ($bizdayidx=0; $bizdayidx < 3; $bizdayidx++) { 
 
             //n営業日前(-1日する)の算出vvv
             $n_bizday_ago = Carbon::create($carbondate->year, $carbondate->month, $carbondate->day, $carbondate->hour, $carbondate->minute, $carbondate->second);
@@ -353,9 +353,16 @@ class SignalController extends Controller
                                                             ->first();
                 //黒三兵かチェックする
                 if ($daily_history_n_ago_buf->price > $price) {
-                    $kurosan_array[$arrayidx][$n_bizday_ago_str] = $daily_history_n_ago_buf->price;
-                    array_push($kurosan_array_buf, $kurosan_array[$arrayidx]);
-                    //dd($kurosan_array_buf);
+                    //黒三兵は数が多く、タイムアウトになってしまう場合があるため、絞り込み条件を追加
+                    //変化の割合が0.985%以上かチェック
+                    if ((floatval($daily_history_n_ago_buf->price) > 0) && ($daily_history_n_ago_buf->price != null)) {
+                        $result = (floatval($price) / floatval($daily_history_n_ago_buf->price));
+                        if ($result >= floatval(0.985)) {
+                            $kurosan_array[$arrayidx][$n_bizday_ago_str] = $daily_history_n_ago_buf->price;
+                            array_push($kurosan_array_buf, $kurosan_array[$arrayidx]);
+                            //dd($kurosan_array_buf);
+                        }
+                    }
                 }
             }   //全銘柄分ループ^^^
 
@@ -379,16 +386,16 @@ class SignalController extends Controller
             $price_1 = $kurosan_array[$arrayidx][$date_array[1]];
             $price_2 = $kurosan_array[$arrayidx][$date_array[2]];
             $price_3 = $kurosan_array[$arrayidx][$date_array[3]];
-            $price_4 = $kurosan_array[$arrayidx][$date_array[4]];
-            $price_delta = floatval($price_0) - floatval($price_4);
-            if ((floatval($price_4) > 0) && ($price_4 != null)){
-                $price_rate = round((floatval($price_0) / floatval($price_4) * 100), 2);
+            //$price_4 = $kurosan_array[$arrayidx][$date_array[4]];
+            $price_delta = floatval($price_0) - floatval($price_3);
+            if ((floatval($price_3) > 0) && ($price_3 != null)){
+                $price_rate = round((floatval($price_0) / floatval($price_3) * 100), 2);
             } else {
                 $price_rate = "---";
             }
             //$kurosan_array[$arrayidx]['price_delta'] = $price_delta;
 
-            $array_temp = array($stock_id, $code, $name, $price_delta, $price_rate, $price_0, $price_1, $price_2, $price_3, $price_4);
+            $array_temp = array($stock_id, $code, $name, $price_delta, $price_rate, $price_0, $price_1, $price_2, $price_3);
             array_push($kurosan_disp_array, $array_temp);
             unset($array_temp);
         }
