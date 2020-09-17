@@ -210,9 +210,17 @@ class SignalController extends Controller
                                                             ->first();
                 //赤三兵かチェックする
                 if ($daily_history_n_ago_buf->price < $price) {
-                    $akasan_array[$arrayidx][$n_bizday_ago_str] = $daily_history_n_ago_buf->price;
-                    array_push($akasan_array_buf, $akasan_array[$arrayidx]);
-                    //dd($akasan_array_buf);
+                    //赤三兵は数が多く、タイムアウトになってしまう場合があるため、絞り込み条件を追加
+                    //変化の割合が1.5%以上かチェック
+                    if ((floatval($daily_history_n_ago_buf->price) > 0) && ($daily_history_n_ago_buf->price != null)) {
+                        $result = (floatval($price) / floatval($daily_history_n_ago_buf->price));
+                        if ($result >= floatval(1.015)) {
+                            $akasan_array[$arrayidx][$n_bizday_ago_str] = $daily_history_n_ago_buf->price;
+                            array_push($akasan_array_buf, $akasan_array[$arrayidx]);
+                            //dd($akasan_array_buf);
+                            //var_dump($daily_history_n_ago_buf->stock_id);
+                        }
+                    }
                 }
             }   //全銘柄分ループ^^^
 
@@ -237,9 +245,14 @@ class SignalController extends Controller
             $price_2 = $akasan_array[$arrayidx][$date_array[2]];
             $price_3 = $akasan_array[$arrayidx][$date_array[3]];
             $price_delta = floatval($price_0) - floatval($price_3);
+            if ((floatval($price_3) > 0) && ($price_3 != null)) {
+                $price_rate = round((floatval($price_0) / floatval($price_3) * 100), 2);
+            } else {
+                $price_rate = "---";
+            }
             //$akasan_array[$arrayidx]['price_delta'] = $price_delta;
 
-            $array_temp = array($stock_id, $code, $name, $price_delta, $price_0, $price_1, $price_2, $price_3);
+            $array_temp = array($stock_id, $code, $name, $price_delta, $price_rate, $price_0, $price_1, $price_2, $price_3);
             array_push($akasan_disp_array, $array_temp);
             unset($array_temp);
         }
@@ -304,8 +317,8 @@ class SignalController extends Controller
         $carbondate = $now;
         $date_array = array();
         array_push($date_array, $baseday_str);
-        //３営業日分の現在値をチェックする
-        for ($bizdayidx=0; $bizdayidx < 3; $bizdayidx++) { 
+        //4営業日分の現在値をチェックする
+        for ($bizdayidx=0; $bizdayidx < 4; $bizdayidx++) { 
 
             //n営業日前(-1日する)の算出vvv
             $n_bizday_ago = Carbon::create($carbondate->year, $carbondate->month, $carbondate->day, $carbondate->hour, $carbondate->minute, $carbondate->second);
@@ -366,10 +379,16 @@ class SignalController extends Controller
             $price_1 = $kurosan_array[$arrayidx][$date_array[1]];
             $price_2 = $kurosan_array[$arrayidx][$date_array[2]];
             $price_3 = $kurosan_array[$arrayidx][$date_array[3]];
-            $price_delta = floatval($price_0) - floatval($price_3);
+            $price_4 = $kurosan_array[$arrayidx][$date_array[4]];
+            $price_delta = floatval($price_0) - floatval($price_4);
+            if ((floatval($price_4) > 0) && ($price_4 != null)){
+                $price_rate = round((floatval($price_0) / floatval($price_4) * 100), 2);
+            } else {
+                $price_rate = "---";
+            }
             //$kurosan_array[$arrayidx]['price_delta'] = $price_delta;
 
-            $array_temp = array($stock_id, $code, $name, $price_delta, $price_0, $price_1, $price_2, $price_3);
+            $array_temp = array($stock_id, $code, $name, $price_delta, $price_rate, $price_0, $price_1, $price_2, $price_3, $price_4);
             array_push($kurosan_disp_array, $array_temp);
             unset($array_temp);
         }

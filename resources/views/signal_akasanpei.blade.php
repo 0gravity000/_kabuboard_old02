@@ -152,6 +152,7 @@
             <th>コード</th>
             <th>銘柄名</th>
             <th>⊿：現在値（円）</th>
+            <th>⊿：変化率（%）</th>
             <th>現在値（円）</th>
             <th>現在値：1営業日前</th>
             <th>現在値：2営業日前</th>
@@ -171,6 +172,7 @@
             <td>{{ $akasan_elm[5] }}</td>
             <td>{{ $akasan_elm[6] }}</td>
             <td>{{ $akasan_elm[7] }}</td>
+            <td>{{ $akasan_elm[8] }}</td>
             <td>#</td>
             </tr>
           @endforeach

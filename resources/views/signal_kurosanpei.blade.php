@@ -152,10 +152,12 @@
             <th>コード</th>
             <th>銘柄名</th>
             <th>⊿：現在値（円）</th>
+            <th>⊿：変化率（%）</th>
             <th>現在値（円）</th>
             <th>現在値：1営業日前</th>
             <th>現在値：2営業日前</th>
             <th>現在値：3営業日前</th>
+            <th>現在値：4営業日前</th>
             <th>#</th>
         </tr>
         </thead>
@@ -171,6 +173,8 @@
             <td>{{ $kurosan_elm[5] }}</td>
             <td>{{ $kurosan_elm[6] }}</td>
             <td>{{ $kurosan_elm[7] }}</td>
+            <td>{{ $kurosan_elm[8] }}</td>
+            <td>{{ $kurosan_elm[9] }}</td>
             <td>#</td>
             </tr>
           @endforeach
