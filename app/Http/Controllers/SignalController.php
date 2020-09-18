@@ -87,10 +87,15 @@ class SignalController extends Controller
         $array_minus1 = array();
         //出来高急増判定
         foreach ($daily_histories_0_buf as $daily_history_0_buf) {
-            //
             $daily_history_minus1_buf = DailyHistory::where('updated_at', 'LIKE', "%$one_bizday_ago_str%")
                                                 ->where('stock_id', $daily_history_0_buf->stock_id)
                                                 ->first();
+            //stock_idで検索し、対象銘柄がヒットしなかった場合、除外し次のループへ
+            //(銘柄を取り込んだ直後にこのようなケースとなる）
+            if ($daily_history_minus1_buf == null) {
+                //var_dump($daily_history_minus1_buf);
+                continue;
+            }
             //dd($daily_history_0_buf, $daily_history_minus1_buf);
             //基準日と1営業日前の両方の出来高が0のものは除外
             if (intval($daily_history_0_buf->volume) == 0 && intval($daily_history_minus1_buf->volume) == 0) {
@@ -208,6 +213,12 @@ class SignalController extends Controller
                 $daily_history_n_ago_buf = DailyHistory::where('updated_at', 'LIKE', "%$n_bizday_ago_str%")
                                                             ->where('stock_id', $stock_id)
                                                             ->first();
+                //stock_idで検索し、対象銘柄がヒットしなかった場合、除外し次のループへ
+                //(銘柄を取り込んだ直後にこのようなケースとなる）
+                if ($daily_history_n_ago_buf == null) {
+                    //var_dump($daily_history_minus1_buf);
+                    continue;
+                }
                 //赤三兵かチェックする
                 if ($daily_history_n_ago_buf->price < $price) {
                     //赤三兵は数が多く、タイムアウトになってしまう場合があるため、絞り込み条件を追加
@@ -351,6 +362,12 @@ class SignalController extends Controller
                 $daily_history_n_ago_buf = DailyHistory::where('updated_at', 'LIKE', "%$n_bizday_ago_str%")
                                                             ->where('stock_id', $stock_id)
                                                             ->first();
+                //stock_idで検索し、対象銘柄がヒットしなかった場合、除外し次のループへ
+                //(銘柄を取り込んだ直後にこのようなケースとなる）
+                if ($daily_history_n_ago_buf == null) {
+                    //var_dump($daily_history_minus1_buf);
+                    continue;
+                }
                 //黒三兵かチェックする
                 if ($daily_history_n_ago_buf->price > $price) {
                     //黒三兵は数が多く、タイムアウトになってしまう場合があるため、絞り込み条件を追加
