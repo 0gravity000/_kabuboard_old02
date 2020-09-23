@@ -25,56 +25,16 @@ class SignalController extends Controller
      */
     public function index_volume()
     {
-        //現在
-        $now = Carbon::now(new DateTimeZone('Asia/Tokyo'));
-        //dd($now);
-        //比較用
-        $first = Carbon::create($now->year, $now->month, $now->day, 16, 30, 0);
-        //dd($first);
-        $second = Carbon::create($now->year, $now->month, $now->day, 23, 59, 59);
-        //dd($second);
-        //基準日
-        if ($now->greaterThanOrEqualTo($first) && $now->lessThanOrEqualTo($second)) {
-            //現在時刻が16:30:00-23:59:59なら基準日はそのまま
-        } else {
-            //現在時刻が00:00-16:29なら基準日は-1日
-            $now->subDay();
-            //dd($now);
-        }
-        //土日は除く
-        // dayOfWeek returns a number between 0 (sunday) and 6 (saturday)
-        while ($now->dayOfWeek == 6 or $now->dayOfWeek == 0) {
-            //-1日する
-            $now = $now->subDay();
-        }
-        //祝日は除く
-        $holidays = Holiday::all();
-        foreach ($holidays as $holiday) {
-            if ($now->toDateString() == $holiday->updated_at) {
-                //-1日する
-                $now = $now->subDay();
-            }
-        }
+        //DailyHistoryテーブルの任意の銘柄を更新日の降順で取得
+        //DailyHistoryテーブルに存在する日付の直近日で比較する
+        $dates = DailyHistory::where('stock_id', "1")
+                            ->orderBy('updated_at', 'desc')
+                            ->get();
+        //dd($dates[0]->updated_at);
 
-
-        //1営業日前 -1日する
-        $one_bizday_ago = Carbon::create($now->year, $now->month, $now->day, $now->hour, $now->minute, $now->second);
-        $one_bizday_ago = $one_bizday_ago->subDay();
-        //土日は除く
-        // dayOfWeek returns a number between 0 (sunday) and 6 (saturday)
-        while ($one_bizday_ago->dayOfWeek == 6 or $one_bizday_ago->dayOfWeek == 0) {
-            //-1日する
-            $one_bizday_ago = $one_bizday_ago->subDay();
-        }
-        //祝日は除く
-        $holidays = Holiday::all();
-        foreach ($holidays as $holiday) {
-            if ($one_bizday_ago->toDateString() == $holiday->updated_at) {
-                //-1日する
-                $one_bizday_ago = $one_bizday_ago->subDay();
-            }
-        }
-
+        $now = $dates[0]->updated_at;
+        $one_bizday_ago = $dates[1]->updated_at;
+        
         $baseday_str = $now->toDateString();
         $one_bizday_ago_str = $one_bizday_ago->toDateString();
         //dd($now, $one_bizday_ago);
@@ -124,43 +84,20 @@ class SignalController extends Controller
 
     public function index_akasanpei()
     {
-        //現在
-        $now = Carbon::now(new DateTimeZone('Asia/Tokyo'));
-        //dd($now);
-        //比較用
-        $first = Carbon::create($now->year, $now->month, $now->day, 16, 30, 0);
-        //dd($first);
-        $second = Carbon::create($now->year, $now->month, $now->day, 23, 59, 59);
-        //dd($second);
-
-        //基準日を算出vvv
-        if ($now->greaterThanOrEqualTo($first) && $now->lessThanOrEqualTo($second)) {
-            //現在時刻が16:30:00-23:59:59なら基準日はそのまま
-        } else {
-            //現在時刻が00:00-16:29なら基準日は-1日
-            $now->subDay();
-            //dd($now);
-        }
-        //土日は除く
-        // dayOfWeek returns a number between 0 (sunday) and 6 (saturday)
-        while ($now->dayOfWeek == 6 or $now->dayOfWeek == 0) {
-            //-1日する
-            $now = $now->subDay();
-        }
-        //祝日は除く
-        $holidays = Holiday::all();
-        foreach ($holidays as $holiday) {
-            if ($now->toDateString() == $holiday->updated_at) {
-                //-1日する
-                $now = $now->subDay();
-            }
-        }
-        //基準日を算出^^^
-
+        //DailyHistoryテーブルの任意の銘柄を更新日の降順で取得
+        //DailyHistoryテーブルに存在する日付の直近日で比較する
+        $dates = DailyHistory::where('stock_id', "1")
+                            ->orderBy('updated_at', 'desc')
+                            ->get();
+        //dd($dates[0]->updated_at);
+        $now = $dates[0]->updated_at;
         //最初に全銘柄分のstock_idと日付を格納した配列を作成
         $baseday_str = $now->toDateString();
         //dd($now, $one_bizday_ago);
         $daily_histories_0_buf = DailyHistory::where('updated_at', 'LIKE', "%$baseday_str%")->get();
+
+        //基準日の全stock_idを配列に格納する
+        //この配列から条件を満たさない銘柄を削除していく
         //dd($daily_histories_0_buf);
         $array_0 = array();
         $array_temp = array();
@@ -181,24 +118,7 @@ class SignalController extends Controller
         array_push($date_array, $baseday_str);
         //３営業日分の現在値をチェックする
         for ($bizdayidx=0; $bizdayidx < 3; $bizdayidx++) { 
-
-            //n営業日前(-1日する)の算出vvv
-            $n_bizday_ago = Carbon::create($carbondate->year, $carbondate->month, $carbondate->day, $carbondate->hour, $carbondate->minute, $carbondate->second);
-            $n_bizday_ago = $n_bizday_ago->subDay();
-            //土日は除く
-            // dayOfWeek returns a number between 0 (sunday) and 6 (saturday)
-            while ($n_bizday_ago->dayOfWeek == 6 or $n_bizday_ago->dayOfWeek == 0) {
-                //-1日する
-                $n_bizday_ago = $n_bizday_ago->subDay();
-            }
-            //祝日は除く
-            $holidays = Holiday::all();
-            foreach ($holidays as $holiday) {
-                if ($n_bizday_ago->toDateString() == $holiday->updated_at) {
-                    //-1日する
-                    $n_bizday_ago = $n_bizday_ago->subDay();
-                }
-            }
+            $n_bizday_ago = $dates[$bizdayidx + 1]->updated_at;
             $n_bizday_ago_str = $n_bizday_ago->toDateString();
             //var_dump($bizdayidx);
             //n営業日前(-1日する)の算出^^^
@@ -273,44 +193,21 @@ class SignalController extends Controller
 
     public function index_kurosanpei()
     {
-        //現在
-        $now = Carbon::now(new DateTimeZone('Asia/Tokyo'));
-        //dd($now);
-        //比較用
-        $first = Carbon::create($now->year, $now->month, $now->day, 16, 30, 0);
-        //dd($first);
-        $second = Carbon::create($now->year, $now->month, $now->day, 23, 59, 59);
-        //dd($second);
-
-        //基準日を算出vvv
-        if ($now->greaterThanOrEqualTo($first) && $now->lessThanOrEqualTo($second)) {
-            //現在時刻が16:30:00-23:59:59なら基準日はそのまま
-        } else {
-            //現在時刻が00:00-16:29なら基準日は-1日
-            $now->subDay();
-            //dd($now);
-        }
-        //土日は除く
-        // dayOfWeek returns a number between 0 (sunday) and 6 (saturday)
-        while ($now->dayOfWeek == 6 or $now->dayOfWeek == 0) {
-            //-1日する
-            $now = $now->subDay();
-        }
-        //祝日は除く
-        $holidays = Holiday::all();
-        foreach ($holidays as $holiday) {
-            if ($now->toDateString() == $holiday->updated_at) {
-                //-1日する
-                $now = $now->subDay();
-            }
-        }
-        //基準日を算出^^^
-
-        //最初に全銘柄分のstock_idと日付を格納した配列を作成
+        //DailyHistoryテーブルの任意の銘柄を更新日の降順で取得
+        //DailyHistoryテーブルに存在する日付の直近日で比較する
+        $dates = DailyHistory::where('stock_id', "1")
+                            ->orderBy('updated_at', 'desc')
+                            ->get();
+        //dd($dates[0]->updated_at);
+        $now = $dates[0]->updated_at;
         $baseday_str = $now->toDateString();
         //dd($now, $one_bizday_ago);
+
         $daily_histories_0_buf = DailyHistory::where('updated_at', 'LIKE', "%$baseday_str%")->get();
         //dd($daily_histories_0_buf);
+        //最初に全銘柄分のstock_idと日付を格納した配列を作成
+        //基準日の全stock_idを配列に格納する
+        //この配列から条件を満たさない銘柄を削除していく
         $array_0 = array();
         $array_temp = array();
         foreach ($daily_histories_0_buf as $daily_history_0_buf) {
@@ -328,26 +225,9 @@ class SignalController extends Controller
         $carbondate = $now;
         $date_array = array();
         array_push($date_array, $baseday_str);
-        //4営業日分の現在値をチェックする
+        //3営業日分の現在値をチェックする
         for ($bizdayidx=0; $bizdayidx < 3; $bizdayidx++) { 
-
-            //n営業日前(-1日する)の算出vvv
-            $n_bizday_ago = Carbon::create($carbondate->year, $carbondate->month, $carbondate->day, $carbondate->hour, $carbondate->minute, $carbondate->second);
-            $n_bizday_ago = $n_bizday_ago->subDay();
-            //土日は除く
-            // dayOfWeek returns a number between 0 (sunday) and 6 (saturday)
-            while ($n_bizday_ago->dayOfWeek == 6 or $n_bizday_ago->dayOfWeek == 0) {
-                //-1日する
-                $n_bizday_ago = $n_bizday_ago->subDay();
-            }
-            //祝日は除く
-            $holidays = Holiday::all();
-            foreach ($holidays as $holiday) {
-                if ($n_bizday_ago->toDateString() == $holiday->updated_at) {
-                    //-1日する
-                    $n_bizday_ago = $n_bizday_ago->subDay();
-                }
-            }
+            $n_bizday_ago = $dates[$bizdayidx + 1]->updated_at;
             $n_bizday_ago_str = $n_bizday_ago->toDateString();
             //var_dump($bizdayidx);
             //n営業日前(-1日する)の算出^^^
