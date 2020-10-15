@@ -84,18 +84,6 @@
               履歴
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="bar-chart-2"></span>
-              Reports
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="layers"></span>
-              Integrations
-            </a>
-          </li>
         </ul>
 
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -109,12 +97,6 @@
             <a class="nav-link" href="/signal">
               <span data-feather="file-text"></span>
               シグナル（日足）
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Year-end sale
             </a>
           </li>
         </ul>
