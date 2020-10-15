@@ -38,7 +38,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function () {
             event(new DailyDBStoreCheck());
-        })->at('17:00');
+        })->dailyAt('17:00');
 
         //$schedule->call(new InvokeUpdateStocksInfo)->everyMinute();
         // $schedule->command('inspire')->hourly();
